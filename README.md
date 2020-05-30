@@ -1,2 +1,2 @@
-# website-vis
-Website visualizer
+# word-frequency-vis
+Word Frequency Visualizer
