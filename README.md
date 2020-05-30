@@ -1,2 +1,2 @@
-# word-frequency-vis
-Word Frequency Visualizer
+# Words-Visualization
+Words Visualization
