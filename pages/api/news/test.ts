@@ -25,7 +25,7 @@ async function news() {
     // cleaning up words
     // removing numbers
     tokens = tokens.filter((word) => {
-        return Number(word)
+        return !Number(word)
     })
 
 
