@@ -14,21 +14,25 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
 async function news() {
     let response = await (await fetch('http://localhost:3000/api/news')).json()
     let tokenizer = new natural.WordTokenizer()
-    let tokens:string[] = response.news
+    let tokens: string[] = response.news
         .map((result: { title: string; description: string }) => {
             return tokenizer.tokenize(result.title + ',' + result.description)
-        }).flat()
+        })
+        .flat()
 
     /* 
         todo: clean up
         remove stop words 
         remove fragments
-        stemming
+        stemming - not working as expected
     */
     let counts = tokens.reduce((count: { [key: string]: number }, word) => {
-        word = word.toLowerCase()
-        if (isNaN(parseInt(word)) && !stopwords.map.has(word)) {
-            count[word] = (count[word] || 0) + 1
+        if (isNaN(parseInt(word))) {
+            word = word.toLowerCase()
+            if (!stopwords.map.has(word)) {
+                // word = natural.PorterStemmer.stem(word)
+                count[word] = (count[word] || 0) + 1
+            }
         }
         return count
     }, {})

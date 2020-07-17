@@ -1,8 +1,9 @@
 import NewsAPI from 'newsapi'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 const newsapi = new NewsAPI(process.env.API_KEY)
 
-export default (req, res) => {
+export default (req: NextApiRequest, res:NextApiResponse) => {
     res.statusCode = 200
     res.setHeader('Content-Type', 'application/json')
 
