@@ -16,16 +16,17 @@ handler
         res.json(await Word.find({}))
     })
     .post(async (req: MiddlewareRequest, res: NextApiResponse) => {
-        const letters = new Word({
-            word: 'Lalala',
-            frequency: 232,
-            date: Date.now(),
-        })
-            .save()
-            .then((r) => console.log(r))
-            .catch((e) => console.error(e))
-
-        res.json(letters)
+        try {
+            const words = new Word({
+                word: req.body.word,
+                frequency: req.body.frequency,
+                date: Date.now(),
+            }).save()
+            res.json(await words)
+        } catch (e) {
+            console.error(e)
+            res.status(500).json({ error: e })
+        }
     })
 
 export default handler
