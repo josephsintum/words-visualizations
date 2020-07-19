@@ -1,26 +1,26 @@
-import { Db, MongoClient } from 'mongodb'
+import mongoose, { Connection } from 'mongoose'
+import { NextApiRequest, NextApiResponse } from 'next'
 
-const client = new MongoClient(
-    process.env.MONGODB_URI ||
-        'mongodb://localhost:27017/?readPreference=primary&ssl=false',
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    }
-)
-
-interface dbMiddlewareRequest {
-    db: Db
-    dbClient: MongoClient
+interface dbMiddlewareRequest extends NextApiRequest {
+    db: Connection
 }
 
 export default async function database(
     req: dbMiddlewareRequest,
-    res: any,
+    res: NextApiResponse,
     next: () => any
 ) {
-    if (!client.isConnected()) await client.connect()
-    req.dbClient = client
-    req.db = client.db(process.env.DB_NAME)
+    mongoose.connect(
+        process.env.MONGODB_URI ||
+            'mongodb://localhost:27017/Test?readPreference=primary&ssl=false',
+        {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }
+    )
+    const db = mongoose.connection
+    db.on('error', (error) => console.log(error))
+    db.once('open', () => console.log('DB successfully connected'))
+    req.db = db
     return next()
 }
