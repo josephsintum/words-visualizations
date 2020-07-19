@@ -1,27 +1,31 @@
 import nextConnect from 'next-connect'
 import middleware from '../../../middleware/middleware'
-import { Db, ObjectID } from 'mongodb'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { Connection } from 'mongoose'
+import Word from '../../../models/Word'
 
 const handler = nextConnect()
 handler.use(middleware)
 
 interface MiddlewareRequest extends NextApiRequest {
-    db: Db
+    db: Connection
 }
 
-handler.get(async (req: MiddlewareRequest, res: NextApiResponse) => {
-    let user = await req.db
-        .collection('newCollection')
-        .insertOne({
-            _id: new ObjectID(),
-            calories: { label: 'Calories', total: 0, target: 0, variant: 0 },
-            carbs: { label: 'Carbs', total: 0, target: 0, variant: 0 },
-            fat: { label: 'Fat', total: 0, target: 0, variant: 0 },
-            protein: { label: 'Protein', total: 0, target: 0, variant: 0 },
+handler
+    .get(async (req: MiddlewareRequest, res: NextApiResponse) => {
+        res.json(await Word.find({}))
+    })
+    .post(async (req: MiddlewareRequest, res: NextApiResponse) => {
+        const letters = new Word({
+            word: 'Lalala',
+            frequency: 232,
+            date: Date.now(),
         })
+            .save()
+            .then((r) => console.log(r))
+            .catch((e) => console.error(e))
 
-    res.json({ hello: 'world' })
-})
+        res.json(letters)
+    })
 
 export default handler
