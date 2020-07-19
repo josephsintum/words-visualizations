@@ -1,19 +1,21 @@
 import nextConnect from 'next-connect'
-import middleware from '../../../middleware/middleware'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Connection } from 'mongoose'
+import middleware from '../../../middleware/middleware'
 import Word from '../../../models/Word'
 
 const handler = nextConnect()
 handler.use(middleware)
 
 interface MiddlewareRequest extends NextApiRequest {
-    db: Connection
+    body: {
+        word: string
+        frequency: number
+    }
 }
 
 handler
     .get(async (req: MiddlewareRequest, res: NextApiResponse) => {
-        res.json(await Word.find({}))
+        res.json(await Word.find())
     })
     .post(async (req: MiddlewareRequest, res: NextApiResponse) => {
         try {

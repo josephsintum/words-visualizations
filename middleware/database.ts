@@ -10,7 +10,7 @@ export default async function database(
     res: NextApiResponse,
     next: () => any
 ) {
-    mongoose.connect(
+    await mongoose.connect(
         process.env.MONGODB_URI ||
             'mongodb://localhost:27017/Test?readPreference=primary&ssl=false',
         {
