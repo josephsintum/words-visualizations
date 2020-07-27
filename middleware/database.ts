@@ -13,17 +13,27 @@ export default async function database(
     res: NextApiResponse,
     next: () => any
 ) {
-    await mongoose.connect(
-        process.env.MONGODB_URI ||
-            'mongodb://localhost:27017/Test?readPreference=primary&ssl=false',
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }
+    if (
+        mongoose.connection.readyState == 0 ||
+        mongoose.connection.readyState == 3
+    ) {
+        await mongoose
+            .connect(
+                process.env.MONGODB_URI ||
+                    'mongodb://localhost:27017/Test?readPreference=primary&ssl=false',
+                {
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                }
+            )
+            .catch((reason) => console.error({ DB_error: reason }))
+    }
+
+    mongoose.connection.on('error', (error) => console.error(error))
+    mongoose.connection.once('open', () =>
+        console.log('DB successfully connected')
     )
-    const db = mongoose.connection
-    db.on('error', (error) => console.log(error))
-    db.once('open', () => console.log('DB successfully connected'))
-    req.db = db
+    req.db = mongoose.connection
+
     return next()
 }
