@@ -1,3 +1,7 @@
+// testing database middleware
+// GET response with all word database entries
+// POST adds word with frequency to database
+
 import nextConnect from 'next-connect'
 import { NextApiRequest, NextApiResponse } from 'next'
 import middleware from '../../../middleware/middleware'

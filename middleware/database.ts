@@ -1,3 +1,6 @@
+// MongoDB connection endpoint middleware
+// Connects to DB and returns mongoose connection in request
+
 import mongoose, { Connection } from 'mongoose'
 import { NextApiRequest, NextApiResponse } from 'next'
 

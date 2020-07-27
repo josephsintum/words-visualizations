@@ -1,3 +1,5 @@
+// Word schema for saving words and frequency in database
+
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
 interface wordTypes extends Document {
@@ -17,6 +19,7 @@ const wordSchema: Schema = new mongoose.Schema({
 
 let word: Model<wordTypes, {}>
 
+// using try catch to avoid schema recreation error
 try {
     word = mongoose.model<wordTypes>('Word', wordSchema)
 } catch (e) {
