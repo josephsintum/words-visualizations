@@ -13,19 +13,26 @@ export default async function database(
     res: NextApiResponse,
     next: () => any
 ) {
+    const MONGODB_URI = (() => {
+        if (process.env.NODE_ENV === 'production') {
+            if (!process.env.MONGODB_URI)
+                throw new Error('Missing MONGODB_URI env var')
+            return process.env.MONGODB_URI
+        }
+        if (!process.env.MONGODB_TEST_URI)
+            throw new Error('Missing MONGODB_TEST_URI env var')
+        return process.env.MONGODB_TEST_URI
+    })()
+
     if (
         mongoose.connection.readyState == 0 ||
         mongoose.connection.readyState == 3
     ) {
         await mongoose
-            .connect(
-                process.env.MONGODB_URI ||
-                    'mongodb://localhost:27017/Test?readPreference=primary&ssl=false',
-                {
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
-                }
-            )
+            .connect(MONGODB_URI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            })
             .catch((reason) => console.error({ DB_error: reason }))
     }
 
