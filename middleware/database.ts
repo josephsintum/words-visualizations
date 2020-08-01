@@ -32,11 +32,15 @@ export default async function database(
             .connect(MONGODB_URI, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
+                useCreateIndex: true,
             })
             .catch((reason) => console.error({ DB_error: reason }))
     }
 
     mongoose.connection.on('error', (error) => console.error(error))
+    mongoose.connection.on('close', () => {
+        mongoose.connection.removeAllListeners()
+    })
     mongoose.connection.once('open', () =>
         console.log('DB successfully connected')
     )
