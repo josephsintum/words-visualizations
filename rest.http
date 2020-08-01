@@ -2,9 +2,16 @@ POST http://localhost:3000/api/stats/allwords
 Content-Type: application/json
 
 {
-    "word": "Awesome",
-    "frequency": 2345
+  "word": "Awesome",
+  "frequency": 2345
 }
 
 ###
 GET http://localhost:3000/api/stats/allwords
+
+###
+GET http://localhost:3000/api/stats/everything
+
+###
+POST http://localhost:3000/api/stats/everything
+Content-Type: application/json
