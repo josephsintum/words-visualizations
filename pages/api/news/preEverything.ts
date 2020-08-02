@@ -1,7 +1,7 @@
 // @ts-ignore
 import NewsAPI from 'newsapi'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { NewsAPIResponse } from './everything'
+import { NewsAPIResponse } from './topHeadlines'
 
 const newsapi = new NewsAPI(process.env.API_KEY)
 

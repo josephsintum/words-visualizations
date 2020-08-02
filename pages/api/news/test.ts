@@ -30,7 +30,7 @@ async function news() {
         if (isNaN(parseInt(word))) {
             word = word.toLowerCase()
             if (!stopwords.map.has(word)) {
-                // word = natural.PorterStemmer.stem(word)
+                // wordModel = natural.PorterStemmer.stem(wordModel)
                 count[word] = (count[word] || 0) + 1
             }
         }
