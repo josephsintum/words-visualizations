@@ -1,4 +1,4 @@
-// reducing array of stop words to a map<word: word>
+// reducing array of stop words to a map<wordModel: wordModel>
 const stopwordsList = [
     '0o',
     '0s',

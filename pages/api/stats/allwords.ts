@@ -1,11 +1,11 @@
 // testing database middleware
-// GET response with all word database entries
-// POST adds word with frequency to database
+// GET response with all wordModel database entries
+// POST adds wordModel with frequency to database
 
 import nextConnect from 'next-connect'
 import { NextApiRequest, NextApiResponse } from 'next'
 import middleware from '../../../middleware/middleware'
-import Word from '../../../models/Word'
+import Word from '../../../models/word.model'
 
 const handler = nextConnect()
 handler.use(middleware)

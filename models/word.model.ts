@@ -17,13 +17,13 @@ const wordSchema: Schema = new mongoose.Schema({
     },
 })
 
-let word: Model<wordTypes, {}>
+let wordModel: Model<wordTypes, {}>
 
 // using try catch to avoid schema recreation error
 try {
-    word = mongoose.model<wordTypes>('Word', wordSchema)
+    wordModel = mongoose.model<wordTypes>('Word', wordSchema)
 } catch (e) {
-    word = mongoose.model<wordTypes>('Word')
+    wordModel = mongoose.model<wordTypes>('Word')
 }
 
-export default word
+export default wordModel

@@ -7,13 +7,13 @@ export interface ArticleType extends Document {
         id?: string
         name: string
     }
-    author: string
+    author?: string
     title: string
     description: string
     url: string
     urlToImage: string
     publishedAt: string
-    content: string
+    content?: string
 }
 
 const ArticleSchema: Schema = new mongoose.Schema({
@@ -24,19 +24,19 @@ const ArticleSchema: Schema = new mongoose.Schema({
     author: String,
     title: String,
     description: String,
-    url: { type: String, unique: true },
+    url: { type: String, required: true, unique: true },
     urlToImage: String,
     publishedAt: String,
     content: String,
 })
 
-let article: Model<ArticleType, {}>
+let articleModel: Model<ArticleType, {}>
 
 // using try catch to avoid schema recreation error
 try {
-    article = mongoose.model<ArticleType>('Article', ArticleSchema)
+    articleModel = mongoose.model<ArticleType>('Article', ArticleSchema)
 } catch (e) {
-    article = mongoose.model<ArticleType>('Article')
+    articleModel = mongoose.model<ArticleType>('Article')
 }
 
-export default article
+export default articleModel
