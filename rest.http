@@ -1,14 +1,3 @@
-POST http://localhost:3000/api/stats/allwords
-Content-Type: application/json
-
-{
-  "wordModel": "Awesome",
-  "frequency": 2345
-}
-
-###
-GET http://localhost:3000/api/stats/allwords
-
 ###
 GET http://localhost:3000/api/news/topHeadlines
 
