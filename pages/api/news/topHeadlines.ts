@@ -7,6 +7,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import NewsAPI from 'newsapi'
 import middleware from '../../../middleware/middleware'
 import Article, { ArticleType } from '../../../models/article.model'
+import TopHeadlinesModel from '../../../models/topHeadlines.model'
 
 const newsapi = new NewsAPI(process.env.API_KEY)
 
@@ -30,9 +31,13 @@ handler
     // update to Top headlines model
     .post(async (req: MiddlewareRequest, res: NextApiResponse) => {
         // fetching top headlines from newsAPI
-        let newsData: NewsAPIResponse = await newsapi.v2.topHeadlines({
-            language: 'en',
-        })
+        let newsData: NewsAPIResponse = await newsapi.v2
+            .topHeadlines({
+                language: 'en',
+            })
+            .catch((err: any) => {
+                console.error(err)
+            })
 
         // check if articles doesn't exist in Database, then store article
         newsData.articles.map((article) => {
@@ -61,10 +66,19 @@ handler
                     return
                 })
         })
+
+        // create top headlines
+        newsData.articles.map(async (article) => {
+            let articleID = await Article.findOne({ url: article.url })
+            if (articleID?._id) {
+                await TopHeadlinesModel.create({
+                    article: articleID._id,
+                }).catch((err) => console.error(err))
+            }
+        })
+
         // respond with success
         res.json({ status: 'success' })
-
-        // create statistics
     })
 
 export default handler

@@ -4,12 +4,13 @@ import mongoose, { Schema, Document, Model } from 'mongoose'
 import { ArticleType } from './article.model'
 
 export interface TopHeadlinesType extends Document {
-    article: ArticleType['url']
+    article: ArticleType['_id']
 }
 
 const TopHeadlinesSchema: Schema = new mongoose.Schema({
     article: {
-        type: Schema.Types.String,
+        type: Schema.Types.ObjectId,
+        ref: 'Article',
         required: true,
     },
 })
