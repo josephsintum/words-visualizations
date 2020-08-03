@@ -1,13 +1,24 @@
 // Article Object schema for saving top headlines in database
 
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Document, Schema } from 'mongoose'
 import { ArticleType } from './article.model'
+
+export interface TopHeadlinesStatsType extends Document {
+    word: string
+    frequency: number
+}
+
+// todo: looking into schema types
+const TopHeadlinesStatsSchema = new Schema<TopHeadlinesStatsType>({
+    word: String,
+    frequency: Number,
+})
 
 export interface TopHeadlinesType extends Document {
     article: ArticleType['_id']
 }
 
-const TopHeadlinesSchema: Schema = new mongoose.Schema({
+const TopHeadlinesSchema = new Schema<TopHeadlinesType>({
     article: {
         type: Schema.Types.ObjectId,
         ref: 'Article',
@@ -15,16 +26,6 @@ const TopHeadlinesSchema: Schema = new mongoose.Schema({
     },
 })
 
-let TopHeadlinesModel: Model<TopHeadlinesType, {}>
-
-// using try catch to avoid schema recreation error
-try {
-    TopHeadlinesModel = mongoose.model<TopHeadlinesType>(
-        'TopHeadlinesModel',
-        TopHeadlinesSchema
-    )
-} catch (e) {
-    TopHeadlinesModel = mongoose.model<TopHeadlinesType>('TopHeadlinesModel')
-}
-
-export default TopHeadlinesModel
+export const TopHeadlinesModel: mongoose.Model<TopHeadlinesType, {}> =
+    mongoose.models.TopHeadlinesModel ||
+    mongoose.model('TopHeadlinesModel', TopHeadlinesSchema)

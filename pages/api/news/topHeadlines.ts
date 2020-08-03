@@ -6,8 +6,8 @@ import { NextApiRequest, NextApiResponse } from 'next'
 // @ts-ignore
 import NewsAPI from 'newsapi'
 import middleware from '../../../middleware/middleware'
-import Article, { ArticleType } from '../../../models/article.model'
-import TopHeadlinesModel from '../../../models/topHeadlines.model'
+import { Article, ArticleType } from '../../../models/article.model'
+import { TopHeadlinesModel } from '../../../models/topHeadlines.model'
 
 const newsapi = new NewsAPI(process.env.API_KEY)
 

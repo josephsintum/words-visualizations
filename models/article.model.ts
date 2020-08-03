@@ -1,6 +1,6 @@
 // Article Object schema for saving news in database
 
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Document, Schema } from 'mongoose'
 
 export interface ArticleType extends Document {
     source: {
@@ -16,7 +16,7 @@ export interface ArticleType extends Document {
     content?: string
 }
 
-const ArticleSchema: Schema = new mongoose.Schema({
+const ArticleSchema = new Schema<ArticleType>({
     source: {
         id: String,
         name: { type: String, required: true },
@@ -30,13 +30,6 @@ const ArticleSchema: Schema = new mongoose.Schema({
     content: String,
 })
 
-let articleModel: Model<ArticleType, {}>
-
-// using try catch to avoid schema recreation error
-try {
-    articleModel = mongoose.model<ArticleType>('Article', ArticleSchema)
-} catch (e) {
-    articleModel = mongoose.model<ArticleType>('Article')
-}
-
-export default articleModel
+export const Article: mongoose.Model<ArticleType, {}> =
+    mongoose.models.Article ||
+    mongoose.model<ArticleType>('Article', ArticleSchema)

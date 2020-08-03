@@ -5,7 +5,7 @@ import nextConnect from 'next-connect'
 import { NextApiRequest, NextApiResponse } from 'next'
 // @ts-ignore
 import middleware from '../../../middleware/middleware'
-import Article, { ArticleType } from '../../../models/article.model'
+import { Article, ArticleType } from '../../../models/article.model'
 
 const handler = nextConnect()
 handler.use(middleware)
