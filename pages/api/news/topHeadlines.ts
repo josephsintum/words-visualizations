@@ -25,8 +25,18 @@ export interface NewsAPIResponse {
 }
 
 handler
-    .get(async (req: MiddlewareRequest, res: NextApiResponse) => {
-        res.json(await Article.find())
+    .get((req: MiddlewareRequest, res: NextApiResponse) => {
+        TopHeadlinesModel.find()
+            .populate({
+                path: 'article',
+            })
+            .then((headlines) => {
+                res.json({ headlines: headlines })
+            })
+            .catch((err) => {
+                console.log(err)
+                res.status(503).json(err)
+            })
     })
     // update to Top headlines model
     .post(async (req: MiddlewareRequest, res: NextApiResponse) => {
