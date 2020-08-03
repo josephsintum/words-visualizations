@@ -1,5 +1,5 @@
 // reducing array of stop words to a map<wordModel: wordModel>
-const stopwordsList = [
+const stopWordsList = [
     '0o',
     '0s',
     '3a',
@@ -1164,8 +1164,8 @@ const stopwordsList = [
 ]
 
 let stopword = {
-    array: stopwordsList,
-    map: stopwordsList.reduce((acc: Map<string, string>, word) => {
+    array: stopWordsList,
+    map: stopWordsList.reduce((acc: Map<string, string>, word) => {
         acc.set(word, word)
         return acc
     }, new Map()),
