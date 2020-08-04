@@ -1163,7 +1163,7 @@ const stopWordsList = [
     'zz',
 ]
 
-let stopword = {
+let stopWords = {
     array: stopWordsList,
     map: stopWordsList.reduce((acc: Map<string, string>, word) => {
         acc.set(word, word)
@@ -1171,4 +1171,4 @@ let stopword = {
     }, new Map()),
 }
 
-export default stopword
+export default stopWords

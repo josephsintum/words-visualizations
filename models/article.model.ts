@@ -1,6 +1,6 @@
 // Article Object schema for saving news in database
 
-import mongoose, { Document, Schema } from 'mongoose'
+import mongoose, { Document, model, models, Schema } from 'mongoose'
 
 export interface ArticleType extends Document {
     source: {
@@ -30,6 +30,5 @@ const ArticleSchema = new Schema<ArticleType>({
     content: String,
 })
 
-export const Article: mongoose.Model<ArticleType, {}> =
-    mongoose.models.Article ||
-    mongoose.model<ArticleType>('Article', ArticleSchema)
+export const Article: mongoose.Model<ArticleType> =
+    models.Article || model<ArticleType>('Article', ArticleSchema)

@@ -7,7 +7,11 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import NewsAPI from 'newsapi'
 import middleware from '../../../middleware/middleware'
 import { Article, ArticleType } from '../../../models/article.model'
-import { TopHeadlinesModel } from '../../../models/topHeadlines.model'
+import {
+    TopHeadlinesModel,
+    TopHeadlinesStatsModel,
+} from '../../../models/topHeadlines.model'
+import wordCounter from '../../../utils/wordCounter'
 
 const newsapi = new NewsAPI(process.env.API_KEY)
 

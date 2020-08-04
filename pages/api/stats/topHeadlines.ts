@@ -5,18 +5,13 @@ import nextConnect from 'next-connect'
 import { NextApiRequest, NextApiResponse } from 'next'
 // @ts-ignore
 import middleware from '../../../middleware/middleware'
-import { Article, ArticleType } from '../../../models/article.model'
+import { TopHeadlinesStatsModel } from '../../../models/topHeadlines.model'
 
 const handler = nextConnect()
 handler.use(middleware)
 
-interface MiddlewareRequest extends NextApiRequest {
-    body: ArticleType
-}
-
-handler
-    .get(async (req: MiddlewareRequest, res: NextApiResponse) => {
-        res.json(await Article.find())
-    })
+handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
+    res.json(await TopHeadlinesStatsModel.find())
+})
 
 export default handler
