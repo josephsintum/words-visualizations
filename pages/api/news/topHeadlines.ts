@@ -91,6 +91,14 @@ handler
             }
         })
 
+        // create top headlines statistics
+        let words = wordCounter(newsData.articles)
+
+        // todo: delete data before adding more
+        await TopHeadlinesStatsModel.create(words).catch((err) =>
+            console.error(err)
+        )
+
         // respond with success
         res.json({ status: 'success' })
     })
