@@ -4,29 +4,32 @@ import { ArticleType } from '../models/article.model'
 
 export default function wordCounter(text: ArticleType[]) {
     let tokenizer = new natural.WordTokenizer()
-    let tokens: string[] = text
-        .map((result) => {
-            return tokenizer.tokenize(result.title + ',' + result.description)
-        })
-        .flat()
 
-    // todo: stemming - not working as expected
-    let counts = tokens.reduce((count: { [key: string]: number }, word) => {
-        if (isNaN(parseInt(word))) {
-            word = word.toLowerCase()
-            if (!stopWords.map.has(word)) {
-                // wordModel = natural.PorterStemmer.stem(wordModel)
-                count[word] = (count[word] || 0) + 1
-            }
-        }
-        return count
-    }, {})
-
-    // sorting object of words in ascending order
-    return Object.keys(counts)
-        .sort((a, b) => counts[b] - counts[a])
-        .reduce((accumulator: { [key: string]: number }, v) => {
-            accumulator[v] = counts[v]
-            return accumulator
-        }, {})
+    return (
+        text
+            // merge and tokenize title and description into a (string[])[]
+            .map((result) =>
+                tokenizer.tokenize(result.title + ',' + result.description)
+            )
+            // flatten to string[]
+            .flat()
+            .reduce((acc: { word: string; frequency: number }[], word) => {
+                // remove numbers, turn to lower case and remove stop words
+                if (isNaN(parseInt(word))) {
+                    word = word.toLowerCase()
+                    if (!stopWords.map.has(word)) {
+                        // todo: stemming - not working as expected
+                        // wordModel = natural.PorterStemmer.stem(wordModel)
+                        acc.push({
+                            word: word,
+                            // frequency: check array if frequency exist ? add 1 : assign 0 then + 1
+                            frequency:
+                                (acc.find((k) => k.word === word)?.frequency ||
+                                    0) + 1,
+                        })
+                    }
+                }
+                return acc
+            }, [])
+    )
 }
