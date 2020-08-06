@@ -1,6 +1,6 @@
 import natural from 'natural'
 import stopWords from './stopWords'
-import { ArticleType } from '../models/article.model'
+import { ArticleType } from './newsAPITypes'
 
 export default function wordCounter(text: ArticleType[]) {
     let tokenizer = new natural.WordTokenizer()
