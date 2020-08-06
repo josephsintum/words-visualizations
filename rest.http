@@ -1,9 +1,6 @@
 ###
-GET http://localhost:3000/api/news/topHeadlines
-
-###
-POST http://localhost:3000/api/news/topHeadlines
+POST http://localhost:3000/api/news
 Content-Type: application/json
 
 ###
-GET http://localhost:3000/api/stats/topHeadlines
+GET http://localhost:3000/api/news
