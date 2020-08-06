@@ -1,35 +1,24 @@
 // MongoDB connection endpoint middleware
 // Connects to DB and returns mongoose connection in request
 
-import mongoose, { Connection } from 'mongoose'
-import { NextApiRequest, NextApiResponse } from 'next'
-
-interface dbMiddlewareRequest extends NextApiRequest {
-    db: Connection
-}
+import mongoose from 'mongoose'
+import { NextApiResponse } from 'next'
+import { MiddlewareRequest } from './middleware'
 
 export default async function database(
-    req: dbMiddlewareRequest,
+    req: MiddlewareRequest,
     res: NextApiResponse,
     next: () => any
 ) {
-    const MONGODB_URI = (() => {
-        if (process.env.NODE_ENV === 'production') {
-            if (!process.env.MONGODB_URI)
-                throw new Error('Missing MONGODB_URI env var')
-            return process.env.MONGODB_URI
-        }
-        if (!process.env.MONGODB_TEST_URI)
-            throw new Error('Missing MONGODB_TEST_URI env var')
-        return process.env.MONGODB_TEST_URI
-    })()
+    if (!process.env.MONGO_URL) throw new Error('Missing MONGO_URL env var')
+    const mongoURL = process.env.MONGO_URL
 
     if (
         mongoose.connection.readyState == 0 ||
         mongoose.connection.readyState == 3
     ) {
         try {
-            await mongoose.connect(MONGODB_URI, {
+            await mongoose.connect(mongoURL, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
                 useCreateIndex: true,
