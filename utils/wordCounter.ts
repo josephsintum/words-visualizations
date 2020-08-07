@@ -20,16 +20,19 @@ export default function wordCounter(text: ArticleType[]) {
                     if (!stopWords.map.has(word)) {
                         // todo: stemming - not working as expected
                         // wordModel = natural.PorterStemmer.stem(wordModel)
-                        acc.push({
-                            word: word,
-                            // frequency: check array if frequency exist ? add 1 : assign 0 then + 1
-                            frequency:
-                                (acc.find((k) => k.word === word)?.frequency ||
-                                    0) + 1,
-                        })
+
+                        let count = acc.find((k) => k.word === word)
+                        if (count) {
+                            ++count.frequency
+                        } else {
+                            acc.push({ word: word, frequency: 1 })
+                        }
                     }
                 }
                 return acc
             }, [])
+            .sort((a, b) => {
+                return b.frequency - a.frequency
+            })
     )
 }
