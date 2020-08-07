@@ -3,7 +3,7 @@
 import mongoose from 'mongoose'
 import { ArticleType } from '../utils/newsAPITypes'
 
-export interface NewsType extends mongoose.Document {
+export interface NewsType {
     dateTime?: Date
     sources: string
     articles: ArticleType[]
@@ -50,5 +50,5 @@ const NewsSchema = new mongoose.Schema({
 // Cannot overwrite `news` model once compiled.
 mongoose.models = {}
 
-export const NewsModel: mongoose.Model<NewsType> =
+export const NewsModel: mongoose.Model<mongoose.Document & NewsType> =
     mongoose.models.NewsModel || mongoose.model('news', NewsSchema)

@@ -1,16 +1,14 @@
-import { Document } from 'mongoose'
-
-export interface ArticleType extends Document {
+export interface ArticleType {
     source: {
-        id?: string
+        id?: string | null
         name: string
     }
-    author?: string
+    author?: string | null
     title: string
     description: string
     url: string
     urlToImage: string
-    publishedAt: Date
+    publishedAt: string
     content?: string
 }
 
