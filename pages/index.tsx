@@ -7,7 +7,7 @@ import { H3 } from 'baseui/typography'
 import React from 'react'
 
 export const getStaticProps = async () => {
-    const res = await fetch('http://localhost:3000/api/news')
+    const res = await fetch('https://words-stats.vercel.app/api/news')
     const news: NewsType[] = await res.json()
 
     return { props: { news } }
