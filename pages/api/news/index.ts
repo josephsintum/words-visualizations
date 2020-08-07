@@ -33,14 +33,13 @@ handler
                 pageSize: 100,
             })
             .then((newsData: NewsAPIResponse) => {
-                let newsStats = wordCounter(newsData.articles)
-
                 // adding news data to the database
                 NewsModel.create({
                     sources: 'all',
                     articles: newsData.articles,
-                    stats: newsStats,
+                    stats: wordCounter(newsData.articles),
                     version: 1,
+                    dateTime: Date.now(),
                 })
                     .then((data) => {
                         res.json(data)

@@ -4,8 +4,8 @@ import mongoose from 'mongoose'
 import { ArticleType } from '../utils/newsAPITypes'
 
 export interface NewsType {
-    dateTime?: Date
-    sources: string
+    dateTime: Date
+    sources: string | 'all'
     articles: ArticleType[]
     stats: [
         {
