@@ -32,7 +32,7 @@ export default function wordCounter(text: ArticleType[]) {
                 return acc
             }, [])
             .sort((a, b) => {
-                return b.frequency - a.frequency
+                return a.frequency - b.frequency
             })
     )
 }
