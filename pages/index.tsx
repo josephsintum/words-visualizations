@@ -27,14 +27,13 @@ export default ({ news }: InferGetStaticPropsType<typeof getStaticProps>) => {
                             domainPadding={25}
                             height={400}
                             padding={{ left: 80 }}
-                            // animate={{
-                            //     onLoad: {
-                            //         duration: 500,
-                            //     },
-                            // }}
+                            animate={{
+                                onLoad: {
+                                    duration: 500,
+                                },
+                            }}
                         >
                             <VictoryBar
-                                {...console.log(data.stats.slice(25, 1))}
                                 data={data.stats.slice(-25)}
                                 x="word"
                                 y="frequency"
