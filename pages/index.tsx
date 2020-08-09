@@ -9,21 +9,11 @@ import {
     VictoryLine,
     VictoryZoomContainer,
 } from 'victory'
-import { InferGetStaticPropsType } from 'next'
 import { NewsType } from '../models/news.model'
 import { Display4 } from 'baseui/typography'
 import { Spinner } from 'baseui/spinner'
 
-export const getStaticProps = async () => {
-    const res = await fetch(`${process.env.API_URL}/news`)
-    const news: NewsType[] = await res.json()
-
-    return { props: { news } }
-}
-
-export const TestGraph = ({
-    news,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+export const TestGraph = ({ news }) => {
     const [zoom, setZoom] = useState({})
     const [selected, setSelected] = useState({})
 
