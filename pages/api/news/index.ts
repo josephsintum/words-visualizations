@@ -43,6 +43,7 @@ handler
             .slice('stats', statSize)
             .limit(pageSize)
             .skip(pageSize * page)
+            .sort('-dateTime')
             .then((data) => {
                 res.json(data)
             })
