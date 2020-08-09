@@ -13,7 +13,7 @@ import { NewsType } from '../models/news.model'
 import { Display4 } from 'baseui/typography'
 import { Spinner } from 'baseui/spinner'
 
-export const TestGraph = ({ news }) => {
+export const TestGraph = () => {
     const [zoom, setZoom] = useState({})
     const [selected, setSelected] = useState({})
 
