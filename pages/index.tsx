@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { H1, H3 } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import {
@@ -11,6 +11,8 @@ import {
 } from 'victory'
 import { InferGetStaticPropsType } from 'next'
 import { NewsType } from '../models/news.model'
+import { Display4 } from 'baseui/typography'
+import { Spinner } from 'baseui/spinner'
 
 export const getStaticProps = async () => {
     const res = await fetch(`${process.env.API_URL}/news`)
@@ -103,41 +105,69 @@ export const TestGraph = ({
     )
 }
 
-export default ({ news }: InferGetStaticPropsType<typeof getStaticProps>) => {
+export default () => {
+    const [isLoaded, setIsLoaded] = useState<{
+        isLoaded: boolean
+        error: any
+    }>({ isLoaded: false, error: null })
+    const [news, setNews] = useState<NewsType[]>([])
+
+    useEffect(() => {
+        fetch('api/news')
+            .then((res) => res.json())
+            .then(
+                (newsData: NewsType[]) => {
+                    setIsLoaded({ ...isLoaded, isLoaded: true })
+                    setNews(newsData)
+                },
+                (error) => {
+                    setIsLoaded({ isLoaded: true, error: error })
+                }
+            )
+    }, [])
+
     return (
         <Block>
             <H1 color={'accent'}>Word Vis: Charting test</H1>
             <Block width={'70%'}>
                 <H3>Time X frequency chart</H3>
                 <br />
-                <TestGraph news={news}/>
+                {isLoaded.error ? (
+                    <Display4 color={'negative'}>{isLoaded.error}</Display4>
+                ) : !isLoaded.isLoaded ? (
+                    <Spinner size={96} />
+                ) : (
+                    news.map((data) => (
+                        <Block key={`stat${data.dateTime.valueOf()}`}>
+                            <H3>{new Date(data.dateTime).toLocaleString()}</H3>
+                            <br />
+                            <VictoryChart
+                                horizontal
+                                domainPadding={25}
+                                height={400}
+                                padding={{ left: 80 }}
+                                // animate={{
+                                //     onLoad: {
+                                //         duration: 500,
+                                //     },
+                                // }}
+                            >
+                                <VictoryBar
+                                    data={data.stats.slice(-25)}
+                                    x="word"
+                                    y="frequency"
+                                    labels={({ datum }) => `${datum.frequency}`}
+                                />
+                            </VictoryChart>
+                            <br />
+                        </Block>
+                    ))
+                )}
+                <br />
+                {/*<TestGraph news={news} />*/}
                 <br />
 
-                {news.map((data) => (
-                    <Block key={`stat${data.dateTime.valueOf()}`}>
-                        <H3>{new Date(data.dateTime).toLocaleString()}</H3>
-                        <br />
-                        <VictoryChart
-                            horizontal
-                            domainPadding={25}
-                            height={400}
-                            padding={{ left: 80 }}
-                            // animate={{
-                            //     onLoad: {
-                            //         duration: 500,
-                            //     },
-                            // }}
-                        >
-                            <VictoryBar
-                                data={data.stats.slice(-25)}
-                                x="word"
-                                y="frequency"
-                                labels={({ datum }) => `${datum.frequency}`}
-                            />
-                        </VictoryChart>
-                        <br />
-                    </Block>
-                ))}
+                {}
             </Block>
         </Block>
     )
