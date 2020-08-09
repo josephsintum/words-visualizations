@@ -3,11 +3,9 @@ import { Block } from 'baseui/block'
 import { VictoryBar, VictoryChart } from 'victory'
 import { InferGetStaticPropsType } from 'next'
 import { NewsType } from '../models/news.model'
-import { H3 } from 'baseui/typography'
-import React from 'react'
 
 export const getStaticProps = async () => {
-    const res = await fetch('https://words-stats.vercel.app/api/news')
+    const res = await fetch(`${process.env.API_URL}/news`)
     const news: NewsType[] = await res.json()
 
     return { props: { news } }
@@ -19,7 +17,7 @@ export default ({ news }: InferGetStaticPropsType<typeof getStaticProps>) => {
             <H1 color={'accent'}>Word Vis: Charting test</H1>
             <Block width={'70%'}>
                 {news.map((data) => (
-                    <>
+                    <Block key={`stat${data.dateTime.valueOf()}`}>
                         <H3>{new Date(data.dateTime).toLocaleString()}</H3>
                         <br />
                         <VictoryChart
@@ -27,11 +25,11 @@ export default ({ news }: InferGetStaticPropsType<typeof getStaticProps>) => {
                             domainPadding={25}
                             height={400}
                             padding={{ left: 80 }}
-                            animate={{
-                                onLoad: {
-                                    duration: 500,
-                                },
-                            }}
+                            // animate={{
+                            //     onLoad: {
+                            //         duration: 500,
+                            //     },
+                            // }}
                         >
                             <VictoryBar
                                 data={data.stats.slice(-25)}
@@ -41,7 +39,7 @@ export default ({ news }: InferGetStaticPropsType<typeof getStaticProps>) => {
                             />
                         </VictoryChart>
                         <br />
-                    </>
+                    </Block>
                 ))}
             </Block>
         </Block>
