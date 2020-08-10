@@ -6,7 +6,7 @@ import { ArticleType } from '../utils/newsAPITypes'
 export interface NewsType {
     dateTime: Date
     sources: string | 'all'
-    articles: ArticleType[]
+    // articles: ArticleType[]
     stats: [
         {
             word: string
@@ -19,21 +19,6 @@ export interface NewsType {
 const NewsSchema = new mongoose.Schema({
     dateTime: { type: Date, default: Date.now },
     sources: String,
-    articles: [
-        {
-            source: {
-                id: String,
-                name: { type: String, required: true },
-            },
-            author: String,
-            title: String,
-            description: String,
-            url: { type: String, required: true },
-            urlToImage: String,
-            publishedAt: Date,
-            content: String,
-        },
-    ],
     stats: [
         {
             word: String,

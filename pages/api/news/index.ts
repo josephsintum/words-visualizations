@@ -69,7 +69,6 @@ handler
                 // adding news data to the database
                 NewsModel.create({
                     sources: 'all',
-                    articles: newsData.articles,
                     stats: wordCounter(newsData.articles),
                     version: 1,
                     dateTime: Date.now(),
