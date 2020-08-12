@@ -1,18 +1,15 @@
 // News Bucket Model for saving news & statistics in database
 
 import mongoose from 'mongoose'
-import { ArticleType } from '../utils/newsAPITypes'
 
 export interface NewsType {
     dateTime: Date
     sources: string | 'all'
-    // articles: ArticleType[]
-    stats: [
-        {
-            word: string
-            frequency: number
-        }
-    ]
+    stats: {
+        word: string
+        frequency: number
+    }[]
+
     version: number
 }
 
