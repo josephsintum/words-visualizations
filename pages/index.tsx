@@ -66,7 +66,7 @@ export default () => {
         <Block>
             <H1 color={'accent'}>Word Vis: Charting test</H1>
             <Block width={'80%'}>
-                <H3>Time X frequency chart</H3>
+                <H3>Word X frequency chart</H3>
                 <br />
 
                 {isLoaded.error ? (
@@ -84,16 +84,16 @@ export default () => {
 export const TestGraph = ({ news }: { news: NewsType[] }) => {
     const [selected, setSelected] = useState<{
         x?: [Date, Date] | [number, number]
-    }>({ x: [new Date().setHours(6), new Date().setHours(12)] })
+    }>({ x: [new Date().setHours(0), new Date().setHours(12)] })
     return (
         <div>
             {selected.x ? (
                 <Block>
                     <VictoryChart
-                        theme={VictoryTheme.material}
                         domainPadding={30}
-                        horizontal
+                        // horizontal
                         width={1000}
+                        theme={VictoryTheme.material}
                     >
                         <VictoryBar
                             x="word"
@@ -102,9 +102,10 @@ export const TestGraph = ({ news }: { news: NewsType[] }) => {
                                 news,
                                 new Date(selected.x[0]),
                                 new Date(selected.x[1])
-                            ).slice(-10)}
+                            ).slice(-15)}
                             labels={({ datum }) => `${datum.frequency}`}
                         />
+                        <VictoryAxis />
                     </VictoryChart>
                 </Block>
             ) : (
