@@ -35,7 +35,7 @@ handler
          *   statSize: number - returns number of statistics per news item
          */
 
-        let pageSize = Number(req.query.pageSize) || 20
+        let pageSize = Number(req.query.pageSize) || 24
         let statSize = -(Number(req.query.statSize) || 25)
         let page = Number(req.query.page) || 0
 
