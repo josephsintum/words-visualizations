@@ -100,14 +100,17 @@ export const TestGraph = ({ news }: { news: NewsType[] }) => {
             new Date().setHours(new Date().getHours() - 1),
         ],
     })
+
+    // @workaround Typescript build fails on VictoryAxis.style.ticks.size #1613
+    const ticksStyle: React.CSSProperties = { stroke: '#000' }
+    // @ts-ignore
+    ticksStyle['size'] = 4
+
     return (
         <div>
             {selected.x ? (
                 <Block>
-                    <VictoryChart
-                        domainPadding={30}
-                        width={1000}
-                    >
+                    <VictoryChart domainPadding={30} width={1000}>
                         <VictoryBar
                             x="word"
                             y="frequency"
@@ -131,7 +134,7 @@ export const TestGraph = ({ news }: { news: NewsType[] }) => {
                             label="Most popular words in the news cycle"
                             style={{
                                 axisLabel: { padding: 35 },
-                                ticks: { stroke: '#000', size: 5 },
+                                ticks: ticksStyle,
                                 tickLabels: { padding: 5 },
                             }}
                         />
@@ -214,7 +217,7 @@ export const TestGraph = ({ news }: { news: NewsType[] }) => {
                             strokeDasharray: '5, 5',
                             opacity: 0.5,
                         },
-                        ticks: { stroke: '#000', size: 5 },
+                        ticks: ticksStyle,
                         tickLabels: { padding: 5 },
                     }}
                     label="Last 24 hours"
