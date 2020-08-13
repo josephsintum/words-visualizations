@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { Display4, Label1, H1, H3, H4 } from 'baseui/typography'
+import { Display4, Label1, H1, H3 } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import { SIZE, StyledSpinnerNext } from 'baseui/spinner'
+import { Grid, Cell } from 'baseui/layout-grid'
+import { ArrowRight } from 'baseui/icon'
+import { ALIGNMENT } from 'baseui/layout-grid'
 import {
     VictoryAxis,
     VictoryBar,
     VictoryBrushContainer,
     VictoryChart,
-    VictoryTheme,
 } from 'victory'
 
 import { NewsType } from '../models/news.model'
+import { H5 } from 'baseui/typography/index'
 
 const calcWordFreq = (
     statistics: NewsType[],
@@ -48,8 +51,15 @@ export default () => {
     }>({ isLoaded: false, error: null })
     const [news, setNews] = useState<NewsType[]>([])
 
+    let newsParams = {
+        pageSize: 90,
+        statSize: 15,
+    }
+
     useEffect(() => {
-        fetch('api/news')
+        fetch(
+            `api/news?pageSize=${newsParams.pageSize}&statSize=${newsParams.statSize}`
+        )
             .then((res) => res.json())
             .then(
                 (newsData: NewsType[]) => {
@@ -84,16 +94,19 @@ export default () => {
 export const TestGraph = ({ news }: { news: NewsType[] }) => {
     const [selected, setSelected] = useState<{
         x?: [Date, Date] | [number, number]
-    }>({ x: [new Date().setHours(0), new Date().setHours(12)] })
+    }>({
+        x: [
+            new Date().setHours(new Date().getHours() - 4),
+            new Date().setHours(new Date().getHours() - 1),
+        ],
+    })
     return (
         <div>
             {selected.x ? (
                 <Block>
                     <VictoryChart
                         domainPadding={30}
-                        // horizontal
                         width={1000}
-                        theme={VictoryTheme.material}
                     >
                         <VictoryBar
                             x="word"
@@ -104,64 +117,107 @@ export const TestGraph = ({ news }: { news: NewsType[] }) => {
                                 new Date(selected.x[1])
                             ).slice(-15)}
                             labels={({ datum }) => `${datum.frequency}`}
+                            style={{
+                                data: {
+                                    fill: 'tomato',
+                                    fillOpacity: 0.7,
+                                },
+                                labels: {
+                                    fill: '#000',
+                                },
+                            }}
                         />
-                        <VictoryAxis />
+                        <VictoryAxis
+                            label="Most popular words in the news cycle"
+                            style={{
+                                axisLabel: { padding: 35 },
+                                ticks: { stroke: '#000', size: 5 },
+                                tickLabels: { padding: 5 },
+                            }}
+                        />
                     </VictoryChart>
+                    <br />
+                    <Grid
+                        align={ALIGNMENT.center}
+                        overrides={{
+                            Grid: {
+                                style: () => ({
+                                    justifyContent: 'center',
+                                }),
+                            },
+                        }}
+                    >
+                        <Cell span={[3]}>
+                            <H5 $style={{ textAlign: 'center' }} margin={0}>
+                                <Label1 as={'span'}>
+                                    {new Date(
+                                        selected.x[0]
+                                    ).toLocaleDateString()}
+                                </Label1>
+                                <br />
+                                {new Date(selected.x[0]).toLocaleTimeString()}
+                            </H5>
+                        </Cell>
+                        <Cell span={[1]}>
+                            <ArrowRight size={48} />
+                        </Cell>
+                        <Cell span={[3]}>
+                            <H5 $style={{ textAlign: 'center' }} margin={0}>
+                                <Label1 as={'span'}>
+                                    {new Date(
+                                        selected.x[1]
+                                    ).toLocaleDateString()}
+                                </Label1>
+                                <br />
+                                {new Date(selected.x[1]).toLocaleTimeString()}
+                            </H5>
+                        </Cell>
+                    </Grid>
                 </Block>
             ) : (
                 'pending'
             )}
+
             <br />
-            <H4 $style={{ textAlign: 'center' }}>
-                <Label1>
-                    {selected.x
-                        ? new Date(selected.x[0]).toLocaleDateString()
-                        : 'Date'}
-                </Label1>
-                {selected.x
-                    ? new Date(selected.x[0]).toLocaleTimeString()
-                    : 'Select'}
-                {' - '}
-                {selected.x
-                    ? new Date(selected.x[1]).toLocaleTimeString()
-                    : 'Time'}
-            </H4>
-            <br />
+            {/* Scrub bar */}
             <VictoryChart
                 width={1000}
                 height={100}
                 scale={{ x: 'time' }}
-                padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
+                padding={{ top: 0, left: 50, right: 50, bottom: 60 }}
                 containerComponent={
                     <VictoryBrushContainer
-                        // responsive={false}
                         brushDimension="x"
                         brushDomain={selected}
                         onBrushDomainChange={setSelected}
+                        brushStyle={{ fill: 'tomato', opacity: 0.5 }}
                     />
                 }
-                theme={VictoryTheme.material}
                 domainPadding={30}
             >
                 <VictoryAxis
                     tickValues={Array.apply(null, Array(24)).map(
                         (value, index) => {
                             let t = new Date()
-                            t.setHours(index)
+                            t.setDate(t.getDate() - 1)
+                            t.setHours(t.getHours() + index + 1)
                             return t
                         }
                     )}
                     tickFormat={(x) => new Date(x).getHours()}
-                />
-                <VictoryBar
-                    data={Array.apply(null, Array(24)).map((value, index) => {
-                        let t = new Date()
-                        t.setHours(index)
-                        return {
-                            x: t,
-                            y: Math.floor(Math.random() * 10),
-                        }
-                    })}
+                    style={{
+                        axisLabel: { padding: 30 },
+                        axis: { stroke: '#756f6a' },
+                        grid: {
+                            stroke: '#000',
+                            strokeWidth: 0.5,
+                            strokeDasharray: '5, 5',
+                            opacity: 0.5,
+                        },
+                        ticks: { stroke: '#000', size: 5 },
+                        tickLabels: { padding: 5 },
+                    }}
+                    label="Last 24 hours"
                 />
             </VictoryChart>
         </div>
