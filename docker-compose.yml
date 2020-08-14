@@ -1,0 +1,6 @@
+mongo:
+  image: mongo
+  restart: always
+  environment:
+    MONGO_INITDB_ROOT_USERNAME: localhost
+    MONGO_INITDB_ROOT_PASSWORD: password
