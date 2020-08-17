@@ -6,7 +6,6 @@ Words Visualization
 
 ![demo](https://raw.githubusercontent.com/josephsintum/words-visualizations/master/public/screenshot.png)
 
-
 Built with these and more:
 
 -   [News API](https://newsapi.org/)
@@ -36,3 +35,6 @@ Built with these and more:
     ```
 
 1. Visit [localhost:3000](http://localhost:3000)
+
+1. Change line 22 of `./github/workflows/cron.yml`, run command which adds news to data to your hosted version of this project,
+   Setup cron job using Github by just hosting code on Github
