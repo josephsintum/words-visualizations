@@ -1,10 +1,8 @@
 import * as React from 'react'
-import { Display4, Label1, H1, H3 } from 'baseui/typography'
+import { Display4, H1, H3, Label4 } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import { SIZE, StyledSpinnerNext } from 'baseui/spinner'
-import { Grid, Cell } from 'baseui/layout-grid'
-import { ArrowRight } from 'baseui/icon'
-import { ALIGNMENT } from 'baseui/layout-grid'
+import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import {
     VictoryAxis,
     VictoryBar,
@@ -13,7 +11,6 @@ import {
 } from 'victory'
 
 import { NewsType } from '../models/news.model'
-import { H5 } from 'baseui/typography'
 
 const calcWordFreq = (
     statistics: NewsType[],
@@ -146,42 +143,23 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                         />
                     </VictoryChart>
                     <br />
-                    <Grid
-                        align={ALIGNMENT.center}
-                        overrides={{
-                            Grid: {
-                                style: () => ({
-                                    justifyContent: 'center',
-                                }),
-                            },
-                        }}
+                    <FlexGrid
+                        flexGridColumnCount={2}
+                        justifyContent="space-between"
+                        padding="0px 50px"
                     >
-                        <Cell span={[3]}>
-                            <H5 $style={{ textAlign: 'center' }} margin={0}>
-                                <Label1 as={'span'}>
-                                    {new Date(
-                                        selected.x[0]
-                                    ).toLocaleDateString()}
-                                </Label1>
-                                <br />
-                                {new Date(selected.x[0]).toLocaleTimeString()}
-                            </H5>
-                        </Cell>
-                        <Cell span={[1]}>
-                            <ArrowRight size={48} />
-                        </Cell>
-                        <Cell span={[3]}>
-                            <H5 $style={{ textAlign: 'center' }} margin={0}>
-                                <Label1 as={'span'}>
-                                    {new Date(
-                                        selected.x[1]
-                                    ).toLocaleDateString()}
-                                </Label1>
-                                <br />
-                                {new Date(selected.x[1]).toLocaleTimeString()}
-                            </H5>
-                        </Cell>
-                    </Grid>
+                        <FlexGridItem>
+                            <Label4 color="#A069D0">Yesterday</Label4>
+                        </FlexGridItem>
+                        <FlexGridItem>
+                            <Label4
+                                $style={{ textAlign: 'end' }}
+                                color="#FF6C9D"
+                            >
+                                Today
+                            </Label4>
+                        </FlexGridItem>
+                    </FlexGrid>
                 </Block>
             ) : (
                 'pending'
