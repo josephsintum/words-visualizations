@@ -5,9 +5,10 @@ import { SIZE, StyledSpinnerNext } from 'baseui/spinner'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import {
     VictoryAxis,
-    VictoryBar,
     VictoryBrushContainer,
     VictoryChart,
+    VictoryLine,
+    VictoryScatter,
 } from 'victory'
 
 import { NewsType } from '../models/news.model'
@@ -58,7 +59,6 @@ const Index = () => {
             `api/news?pageSize=${newsParams.pageSize}&statSize=${newsParams.statSize}`
         )
             .then((res) => {
-                console.log(res)
                 return res.json()
             })
             .then(
@@ -115,9 +115,10 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
             {selected.x ? (
                 <Block>
                     <VictoryChart domainPadding={30} width={1000}>
-                        <VictoryBar
+                        <VictoryLine
                             x="word"
                             y="frequency"
+                            interpolation="cardinal"
                             data={calcWordFreq(
                                 news,
                                 new Date(selected.x[0]),
@@ -126,22 +127,52 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                             labels={({ datum }) => `${datum.frequency}`}
                             style={{
                                 data: {
-                                    fill: 'tomato',
-                                    fillOpacity: 0.7,
+                                    stroke: '#FF6C9D',
+                                    strokeWidth: 5,
                                 },
                                 labels: {
-                                    fill: '#000',
+                                    fill: '#FF6C9D',
                                 },
+                            }}
+                        />
+                        <VictoryScatter
+                            x="word"
+                            y="frequency"
+                            data={calcWordFreq(
+                                news,
+                                new Date(selected.x[0]),
+                                new Date(selected.x[1])
+                            ).slice(-15)}
+                            size={5}
+                            style={{
+                                data: {
+                                    fill: '#fff',
+                                    stroke: '#FF6C9D',
+                                    strokeWidth: 3,
+                                },
+                            }}
+                        />
+
+                        <VictoryAxis
+                            style={{
+                                axis: { opacity: 0 },
+                                tickLabels: { angle: -90 },
+                                grid: { stroke: '#A9BEF2', opacity: 0.48 },
                             }}
                         />
                         <VictoryAxis
-                            label="Most popular words in the news cycle"
+                            dependentAxis
                             style={{
-                                axisLabel: { padding: 35 },
-                                tickLabels: { padding: 5 },
+                                axis: {
+                                    stroke: '#fff',
+                                    opacity: 0,
+                                    fontWeight: 100,
+                                },
+                                tickLabels: { padding: 15, fill: '#A069D0' },
                             }}
                         />
                     </VictoryChart>
+
                     <br />
                     <FlexGrid
                         flexGridColumnCount={2}
