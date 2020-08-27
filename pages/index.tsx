@@ -156,7 +156,10 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                         <VictoryAxis
                             style={{
                                 axis: { opacity: 0 },
-                                tickLabels: { angle: -90 },
+                                tickLabels: {
+                                    angle: '-90',
+                                    transform: 'translate(-16 0)',
+                                },
                                 grid: { stroke: '#A9BEF2', opacity: 0.48 },
                             }}
                         />
