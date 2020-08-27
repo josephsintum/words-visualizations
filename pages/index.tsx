@@ -187,14 +187,6 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                 }
                 domainPadding={30}
             >
-                <svg style={{ height: 0 }}>
-                    <defs>
-                        <linearGradient id="myGradient">
-                            <stop offset="0%" stopColor="#A069D0" />
-                            <stop offset="100%" stopColor="#FF6C9F" />
-                        </linearGradient>
-                    </defs>
-                </svg>
                 <VictoryAxis
                     tickValues={Array.apply(null, Array(24)).map(
                         (value, index) => {
@@ -222,6 +214,15 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                     }}
                 />
             </VictoryChart>
+            {/*svg gradient*/}
+            <svg style={{ height: 0 }}>
+                <defs>
+                    <linearGradient id="myGradient">
+                        <stop offset="0%" stopColor="#A069D0" />
+                        <stop offset="100%" stopColor="#FF6C9F" />
+                    </linearGradient>
+                </defs>
+            </svg>
         </div>
     )
 }
