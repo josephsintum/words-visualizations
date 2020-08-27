@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import * as React from 'react'
 import { Display4, Label1, H1, H3 } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import { SIZE, StyledSpinnerNext } from 'baseui/spinner'
@@ -13,7 +13,7 @@ import {
 } from 'victory'
 
 import { NewsType } from '../models/news.model'
-import { H5 } from 'baseui/typography/index'
+import { H5 } from 'baseui/typography'
 
 const calcWordFreq = (
     statistics: NewsType[],
@@ -44,23 +44,26 @@ const calcWordFreq = (
         })
 }
 
-export default () => {
-    const [isLoaded, setIsLoaded] = useState<{
+const Index = () => {
+    const [isLoaded, setIsLoaded] = React.useState<{
         isLoaded: boolean
         error: any
     }>({ isLoaded: false, error: null })
-    const [news, setNews] = useState<NewsType[]>([])
+    const [news, setNews] = React.useState<NewsType[]>([])
 
     let newsParams = {
         pageSize: 90,
         statSize: 15,
     }
 
-    useEffect(() => {
+    React.useEffect(() => {
         fetch(
             `api/news?pageSize=${newsParams.pageSize}&statSize=${newsParams.statSize}`
         )
-            .then((res) => res.json())
+            .then((res) => {
+                console.log(res)
+                return res.json()
+            })
             .then(
                 (newsData: NewsType[]) => {
                     setIsLoaded({ ...isLoaded, isLoaded: true })
@@ -84,15 +87,17 @@ export default () => {
                 ) : !isLoaded.isLoaded ? (
                     <StyledSpinnerNext $size={SIZE.large} />
                 ) : (
-                    <TestGraph news={news} />
+                    <WordVis news={news} />
                 )}
             </Block>
         </Block>
     )
 }
 
-export const TestGraph = ({ news }: { news: NewsType[] }) => {
-    const [selected, setSelected] = useState<{
+export default Index
+
+export const WordVis = ({ news }: { news: NewsType[] }) => {
+    const [selected, setSelected] = React.useState<{
         x?: [Date, Date] | [number, number]
     }>({
         x: [
@@ -101,11 +106,9 @@ export const TestGraph = ({ news }: { news: NewsType[] }) => {
         ],
     })
 
-    // @workaround Typescript build fails on VictoryAxis.style.ticks.size #1613
-    const ticksStyle: React.CSSProperties = { stroke: '#000' }
     // @ts-ignore
-    ticksStyle['size'] = 4
-
+    // @ts-ignore
+    // @ts-ignore
     return (
         <div>
             {selected.x ? (
@@ -134,7 +137,6 @@ export const TestGraph = ({ news }: { news: NewsType[] }) => {
                             label="Most popular words in the news cycle"
                             style={{
                                 axisLabel: { padding: 35 },
-                                ticks: ticksStyle,
                                 tickLabels: { padding: 5 },
                             }}
                         />
@@ -193,11 +195,24 @@ export const TestGraph = ({ news }: { news: NewsType[] }) => {
                         brushDimension="x"
                         brushDomain={selected}
                         onBrushDomainChange={setSelected}
-                        brushStyle={{ fill: 'tomato', opacity: 0.5 }}
+                        brushStyle={{
+                            fill: 'url(#myGradient)',
+                            // @ts-ignore
+                            rx: 12,
+                            height: 24,
+                        }}
                     />
                 }
                 domainPadding={30}
             >
+                <svg style={{ height: 0 }}>
+                    <defs>
+                        <linearGradient id="myGradient">
+                            <stop offset="0%" stopColor="#A069D0" />
+                            <stop offset="100%" stopColor="#FF6C9F" />
+                        </linearGradient>
+                    </defs>
+                </svg>
                 <VictoryAxis
                     tickValues={Array.apply(null, Array(24)).map(
                         (value, index) => {
@@ -207,20 +222,16 @@ export const TestGraph = ({ news }: { news: NewsType[] }) => {
                             return t
                         }
                     )}
+                    offsetY={87}
                     tickFormat={(x) => new Date(x).getHours()}
                     style={{
-                        axisLabel: { padding: 30 },
-                        axis: { stroke: '#756f6a' },
-                        grid: {
-                            stroke: '#000',
-                            strokeWidth: 0.5,
-                            strokeDasharray: '5, 5',
+                        axis: {
+                            stroke: '#FF8A85',
                             opacity: 0.5,
+                            strokeWidth: 6,
                         },
-                        ticks: ticksStyle,
-                        tickLabels: { padding: 5 },
+                        tickLabels: { padding: 25, fill: '#A069D0' },
                     }}
-                    label="Last 24 hours"
                 />
             </VictoryChart>
         </div>
