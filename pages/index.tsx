@@ -98,7 +98,7 @@ export default Index
 
 export const WordVis = ({ news }: { news: NewsType[] }) => {
     const [selected, setSelected] = React.useState<{
-        x?: [Date, Date] | [number, number]
+        x: [Date, Date] | [number, number]
     }>({
         x: [
             new Date().setHours(new Date().getHours() - 4),
@@ -106,9 +106,13 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
         ],
     })
 
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
+    const isTimeRange = (time: Date) => {
+        return (
+            new Date(selected.x[0]) < new Date(time) &&
+            new Date(time) < new Date(selected.x[1])
+        )
+    }
+
     return (
         <div>
             {selected.x ? (
@@ -230,7 +234,13 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                             opacity: 0.5,
                             strokeWidth: 6,
                         },
-                        tickLabels: { padding: 25, fill: '#A069D0' },
+                        tickLabels: {
+                            padding: 25,
+                            fill: ({ tick }) =>
+                                isTimeRange(tick) ? '#A069D0' : '#464444',
+                            fontWeight: ({ tick }) =>
+                                isTimeRange(tick) ? '600' : '100',
+                        },
                     }}
                 />
             </VictoryChart>
