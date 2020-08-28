@@ -1,10 +1,12 @@
 import * as React from 'react'
+import { useStyletron } from 'baseui'
 import { Display4, H1, H3, Label2, Label4 } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import { SIZE, StyledSpinnerNext } from 'baseui/spinner'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { Button } from 'baseui/button'
 import { Filter } from 'baseui/icon'
+import { formatRelative } from 'date-fns'
 
 import {
     VictoryAxis,
@@ -112,11 +114,11 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
         x: [Date, Date] | [number, number]
     }>({
         x: [
-            new Date().setHours(new Date().getHours() - 4),
+            new Date().setHours(new Date().getHours() - 8),
             new Date().setHours(new Date().getHours() - 1),
         ],
     })
-    const [alphaSort, setAlphaSort] = React.useState(false)
+    const [alphaSort, setAlphaSort] = React.useState(true)
 
     const isTimeRange = (time: Date) => {
         return (
@@ -133,6 +135,8 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
         alphaSort
     )
 
+    const [css] = useStyletron()
+
     return (
         <div>
             {selected.x ? (
@@ -143,16 +147,14 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                     >
                         <FlexGridItem>
                             <Label2 paddingLeft="20px">
-                                {new Date(selected.x[0]).getHours()}
-                                {new Date(selected.x[0]).getHours() >= 12
-                                    ? 'pm'
-                                    : 'am'}{' '}
-                                yesterday to{' '}
-                                {new Date(selected.x[1]).getHours()}
-                                {new Date(selected.x[1]).getHours() >= 12
-                                    ? 'pm'
-                                    : 'am'}{' '}
-                                today
+                                <span className={css({ color: '#A069D0' })}>
+                                    {' '}
+                                    {formatRelative(selected.x[0], new Date())}
+                                </span>{' '}
+                                to{' '}
+                                <span className={css({ color: '#FF6C9D' })}>
+                                    {formatRelative(selected.x[1], new Date())}
+                                </span>
                             </Label2>
                         </FlexGridItem>
                         <FlexGridItem>
