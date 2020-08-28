@@ -1,8 +1,11 @@
 import * as React from 'react'
-import { Display4, H1, H3, Label4 } from 'baseui/typography'
+import { Display4, H1, H3, Label2, Label4 } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import { SIZE, StyledSpinnerNext } from 'baseui/spinner'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
+import { Button } from 'baseui/button'
+import { Filter } from 'baseui/icon'
+
 import {
     VictoryAxis,
     VictoryBrushContainer,
@@ -10,18 +13,19 @@ import {
     VictoryLine,
     VictoryScatter,
 } from 'victory'
-
 import { NewsType } from '../models/news.model'
 
 const calcWordFreq = (
     statistics: NewsType[],
     startTime: Date | number,
-    endTime: Date | number
+    endTime: Date | number,
+    slice?: number,
+    alphaSort?: boolean
 ) => {
     let start = new Date(startTime)
     let end = new Date(endTime)
 
-    return statistics
+    let stats = statistics
         .reduce((acc: NewsType['stats'][], stat) => {
             let currTime = new Date(stat.dateTime)
             if (start <= currTime && currTime <= end) acc.push(stat.stats)
@@ -37,9 +41,19 @@ const calcWordFreq = (
             }
             return acc
         }, [])
-        .sort((a, b) => {
-            return a.frequency - b.frequency
+        .sort((a, b) => a.frequency - b.frequency)
+
+    // number of words to be returned
+    if (slice) stats = stats.slice(slice)
+    // alphaSort remaining array in alphabetical order
+    if (alphaSort)
+        stats = stats.sort((a, b) => {
+            if (a.word < b.word) return -1
+            if (a.word > b.word) return 1
+            return 0
         })
+
+    return stats
 }
 
 const Index = () => {
@@ -102,6 +116,7 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
             new Date().setHours(new Date().getHours() - 1),
         ],
     })
+    const [alphaSort, setAlphaSort] = React.useState(false)
 
     const isTimeRange = (time: Date) => {
         return (
@@ -110,20 +125,55 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
         )
     }
 
+    let data = calcWordFreq(
+        news,
+        new Date(selected.x[0]),
+        new Date(selected.x[1]),
+        -20,
+        alphaSort
+    )
+
     return (
         <div>
             {selected.x ? (
                 <Block>
+                    <FlexGrid
+                        flexGridColumnCount={2}
+                        justifyContent="space-between"
+                    >
+                        <FlexGridItem>
+                            <Label2 paddingLeft="20px">
+                                {new Date(selected.x[0]).getHours()}
+                                {new Date(selected.x[0]).getHours() >= 12
+                                    ? 'pm'
+                                    : 'am'}{' '}
+                                yesterday to{' '}
+                                {new Date(selected.x[1]).getHours()}
+                                {new Date(selected.x[1]).getHours() >= 12
+                                    ? 'pm'
+                                    : 'am'}{' '}
+                                today
+                            </Label2>
+                        </FlexGridItem>
+                        <FlexGridItem>
+                            <Button
+                                onClick={() => setAlphaSort(!alphaSort)}
+                                $style={{
+                                    backgroundColor: '#FF6C9D',
+                                    float: 'right',
+                                }}
+                            >
+                                <Filter size={20} />
+                            </Button>
+                        </FlexGridItem>
+                    </FlexGrid>
+
                     <VictoryChart domainPadding={30} width={1000}>
                         <VictoryLine
                             x="word"
                             y="frequency"
                             interpolation="cardinal"
-                            data={calcWordFreq(
-                                news,
-                                new Date(selected.x[0]),
-                                new Date(selected.x[1])
-                            ).slice(-15)}
+                            data={data}
                             labels={({ datum }) => `${datum.frequency}`}
                             style={{
                                 data: {
@@ -138,11 +188,7 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                         <VictoryScatter
                             x="word"
                             y="frequency"
-                            data={calcWordFreq(
-                                news,
-                                new Date(selected.x[0]),
-                                new Date(selected.x[1])
-                            ).slice(-15)}
+                            data={data}
                             size={5}
                             style={{
                                 data: {
@@ -171,7 +217,11 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                                     opacity: 0,
                                     fontWeight: 100,
                                 },
-                                tickLabels: { padding: 15, fill: '#A069D0' },
+                                tickLabels: {
+                                    padding: 15,
+                                    fill: '#A069D0',
+                                    fontWeight: 100,
+                                },
                             }}
                         />
                     </VictoryChart>
