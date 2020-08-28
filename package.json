@@ -13,6 +13,7 @@
     "@types/styletron-standard": "^2.0.1",
     "@types/victory": "^33.1.4",
     "baseui": "^9.93.0",
+    "date-fns": "^2.16.0",
     "mongoose": "^5.9.25",
     "natural": "^2.1.5",
     "newsapi": "^2.4.0",
