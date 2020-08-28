@@ -6,7 +6,7 @@ import { SIZE, StyledSpinnerNext } from 'baseui/spinner'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { Button } from 'baseui/button'
 import { Filter } from 'baseui/icon'
-import { formatRelative } from 'date-fns'
+import { formatRelative, subHours, isWithinInterval } from 'date-fns'
 
 import {
     VictoryAxis,
@@ -113,19 +113,9 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
     const [selected, setSelected] = React.useState<{
         x: [Date, Date] | [number, number]
     }>({
-        x: [
-            new Date().setHours(new Date().getHours() - 8),
-            new Date().setHours(new Date().getHours() - 1),
-        ],
+        x: [subHours(new Date(), 8), subHours(new Date(), 1)],
     })
     const [alphaSort, setAlphaSort] = React.useState(true)
-
-    const isTimeRange = (time: Date) => {
-        return (
-            new Date(selected.x[0]) < new Date(time) &&
-            new Date(time) < new Date(selected.x[1])
-        )
-    }
 
     let data = calcWordFreq(
         news,
@@ -176,14 +166,10 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                             y="frequency"
                             interpolation="cardinal"
                             data={data}
-                            labels={({ datum }) => `${datum.frequency}`}
                             style={{
                                 data: {
-                                    stroke: '#FF6C9D',
-                                    strokeWidth: 5,
-                                },
-                                labels: {
-                                    fill: '#FF6C9D',
+                                    stroke: alphaSort ? '#A069D0' : '#FF6C9D',
+                                    strokeWidth: 3,
                                 },
                             }}
                         />
@@ -195,7 +181,7 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                             style={{
                                 data: {
                                     fill: '#fff',
-                                    stroke: '#FF6C9D',
+                                    stroke: alphaSort ? '#A069D0' : '#FF6C9D',
                                     strokeWidth: 3,
                                 },
                             }}
@@ -293,13 +279,24 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                         tickLabels: {
                             padding: 25,
                             fill: ({ tick }) =>
-                                isTimeRange(tick) ? '#A069D0' : '#464444',
+                                isWithinInterval(new Date(tick), {
+                                    start: new Date(selected.x[0]),
+                                    end: new Date(selected.x[1]),
+                                })
+                                    ? '#A069D0'
+                                    : '#464444',
                             fontWeight: ({ tick }) =>
-                                isTimeRange(tick) ? '600' : '100',
+                                isWithinInterval(new Date(tick), {
+                                    start: new Date(selected.x[0]),
+                                    end: new Date(selected.x[1]),
+                                })
+                                    ? '600'
+                                    : '100',
                         },
                     }}
                 />
             </VictoryChart>
+
             {/*svg gradient*/}
             <svg style={{ height: 0 }}>
                 <defs>
