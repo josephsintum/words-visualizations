@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { useStyletron } from 'baseui'
-import { Display4, H1, H3, Label2, Label4 } from 'baseui/typography'
+import { Display4, H1, H3, Label2 } from 'baseui/typography'
 import { Block } from 'baseui/block'
 import { SIZE, StyledSpinnerNext } from 'baseui/spinner'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { Button } from 'baseui/button'
 import { Filter } from 'baseui/icon'
 import { formatRelative, subHours, isWithinInterval } from 'date-fns'
-
 import {
     VictoryAxis,
     VictoryBrushContainer,
@@ -15,6 +14,7 @@ import {
     VictoryLine,
     VictoryScatter,
 } from 'victory'
+
 import { NewsType } from '../models/news.model'
 
 const calcWordFreq = (
@@ -89,9 +89,9 @@ const Index = () => {
     }, [])
 
     return (
-        <Block>
+        <Block width={'80%'} margin="auto" maxWidth="1200px">
             <H1 color={'accent'}>Word Vis: Charting test</H1>
-            <Block width={'80%'}>
+            <Block>
                 <H3>Word X frequency chart</H3>
                 <br />
 
@@ -129,113 +129,105 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
 
     return (
         <div>
-            {selected.x ? (
-                <Block>
-                    <FlexGrid
-                        flexGridColumnCount={2}
-                        justifyContent="space-between"
-                    >
-                        <FlexGridItem>
-                            <Label2 paddingLeft="20px">
-                                <span className={css({ color: '#A069D0' })}>
-                                    {' '}
-                                    {formatRelative(selected.x[0], new Date())}
-                                </span>{' '}
-                                to{' '}
-                                <span className={css({ color: '#FF6C9D' })}>
-                                    {formatRelative(selected.x[1], new Date())}
-                                </span>
-                            </Label2>
-                        </FlexGridItem>
-                        <FlexGridItem>
-                            <Button
-                                onClick={() => setAlphaSort(!alphaSort)}
-                                $style={{
-                                    backgroundColor: '#FF6C9D',
-                                    float: 'right',
-                                }}
-                            >
-                                <Filter size={20} />
-                            </Button>
-                        </FlexGridItem>
-                    </FlexGrid>
+            <Block>
+                <FlexGrid
+                    flexGridColumnCount={2}
+                    justifyContent="space-between"
+                >
+                    <FlexGridItem>
+                        <Label2 paddingLeft="20px">
+                            <span className={css({ color: '#A069D0' })}>
+                                {' '}
+                                {formatRelative(selected.x[0], new Date())}
+                            </span>{' '}
+                            to{' '}
+                            <span className={css({ color: '#FF6C9D' })}>
+                                {formatRelative(selected.x[1], new Date())}
+                            </span>
+                        </Label2>
+                    </FlexGridItem>
+                    <FlexGridItem>
+                        <Button
+                            onClick={() => setAlphaSort(!alphaSort)}
+                            $style={{
+                                backgroundColor: '#FF6C9D',
+                                float: 'right',
+                            }}
+                        >
+                            <Filter size={20} />
+                        </Button>
+                    </FlexGridItem>
+                </FlexGrid>
 
-                    <VictoryChart domainPadding={30} width={1000}>
-                        <VictoryLine
-                            x="word"
-                            y="frequency"
-                            interpolation="cardinal"
-                            data={data}
-                            style={{
-                                data: {
-                                    stroke: alphaSort ? '#A069D0' : '#FF6C9D',
-                                    strokeWidth: 3,
-                                },
-                            }}
-                        />
-                        <VictoryScatter
-                            x="word"
-                            y="frequency"
-                            data={data}
-                            size={5}
-                            style={{
-                                data: {
-                                    fill: '#fff',
-                                    stroke: alphaSort ? '#A069D0' : '#FF6C9D',
-                                    strokeWidth: 3,
-                                },
-                            }}
-                        />
+                <VictoryChart domainPadding={30} width={1000}>
+                    <VictoryAxis
+                        style={{
+                            axis: { opacity: 0 },
+                            tickLabels: {
+                                angle: '-90',
+                                transform: 'translate(-16 0)',
+                            },
+                            grid: { stroke: '#A9BEF2', opacity: 0.48 },
+                        }}
+                    />
+                    <VictoryAxis
+                        dependentAxis
+                        style={{
+                            axis: {
+                                stroke: '#fff',
+                                opacity: 0,
+                                fontWeight: 100,
+                            },
+                            tickLabels: {
+                                padding: 15,
+                                fill: '#A069D0',
+                                fontWeight: 100,
+                            },
+                        }}
+                    />
+                    <VictoryLine
+                        x="word"
+                        y="frequency"
+                        interpolation="natural"
+                        data={data}
+                        style={{
+                            data: {
+                                stroke: alphaSort ? '#A069D0' : '#FF6C9D',
+                                strokeWidth: 4,
+                            },
+                        }}
+                    />
+                    <VictoryScatter
+                        x="word"
+                        y="frequency"
+                        data={data}
+                        size={5}
+                        style={{
+                            data: {
+                                fill: '#fff',
+                                stroke: alphaSort ? '#A069D0' : '#FF6C9D',
+                                strokeWidth: 4,
+                            },
+                        }}
+                    />
+                </VictoryChart>
 
-                        <VictoryAxis
-                            style={{
-                                axis: { opacity: 0 },
-                                tickLabels: {
-                                    angle: '-90',
-                                    transform: 'translate(-16 0)',
-                                },
-                                grid: { stroke: '#A9BEF2', opacity: 0.48 },
-                            }}
-                        />
-                        <VictoryAxis
-                            dependentAxis
-                            style={{
-                                axis: {
-                                    stroke: '#fff',
-                                    opacity: 0,
-                                    fontWeight: 100,
-                                },
-                                tickLabels: {
-                                    padding: 15,
-                                    fill: '#A069D0',
-                                    fontWeight: 100,
-                                },
-                            }}
-                        />
-                    </VictoryChart>
-
-                    <br />
-                    <FlexGrid
-                        flexGridColumnCount={2}
-                        justifyContent="space-between"
-                        padding="0px 50px"
-                    >
-                        <FlexGridItem>
-                            <Label4 color="#A069D0">Yesterday</Label4>
-                        </FlexGridItem>
-                        <FlexGridItem>
-                            <Label4
-                                $style={{ textAlign: 'end' }}
-                                color="#FF6C9D"
-                            >
-                                Today
-                            </Label4>
-                        </FlexGridItem>
-                    </FlexGrid>
-                </Block>
-            ) : (
-                'pending'
-            )}
+                <br />
+                <FlexGrid
+                    flexGridColumnCount={2}
+                    justifyContent="space-between"
+                    padding="0px 50px"
+                >
+                    <FlexGridItem>
+                        <Label2 color="#A069D0">Yesterday</Label2>
+                    </FlexGridItem>
+                    <FlexGridItem>
+                        <Label2 $style={{ textAlign: 'end' }} color="#FF6C9D">
+                            Today
+                        </Label2>
+                    </FlexGridItem>
+                </FlexGrid>
+            </Block>
 
             <br />
             {/* Scrub bar */}
