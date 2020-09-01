@@ -2,9 +2,9 @@ import * as React from 'react'
 import { useStyletron } from 'baseui'
 import { Display4, H1, H3, Label2 } from 'baseui/typography'
 import { Block } from 'baseui/block'
-import { SIZE, StyledSpinnerNext } from 'baseui/spinner'
+import { SIZE as SpinnerSIZE, StyledSpinnerNext } from 'baseui/spinner'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { Button } from 'baseui/button'
+import { SHAPE, SIZE, Button } from 'baseui/button'
 import { Filter } from 'baseui/icon'
 import { formatRelative, subHours, isWithinInterval } from 'date-fns'
 import {
@@ -98,7 +98,7 @@ const Index = () => {
                 {isLoaded.error ? (
                     <Display4 color={'negative'}>{isLoaded.error}</Display4>
                 ) : !isLoaded.isLoaded ? (
-                    <StyledSpinnerNext $size={SIZE.large} />
+                    <StyledSpinnerNext $size={SpinnerSIZE.large} />
                 ) : (
                     <WordVis news={news} />
                 )}
@@ -148,13 +148,22 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                     </FlexGridItem>
                     <FlexGridItem>
                         <Button
+                            endEnhancer={() => <Filter size={20} />}
                             onClick={() => setAlphaSort(!alphaSort)}
+                            shape={SHAPE.pill}
+                            size={SIZE.compact}
                             $style={{
-                                backgroundColor: '#FF6C9D',
+                                backgroundColor: alphaSort
+                                    ? '#FF6C9D'
+                                    : '#A069D0',
                                 float: 'right',
+
+                                // ':hover': {
+                                //     backgroundColor: '#fff',
+                                // },
                             }}
                         >
-                            <Filter size={20} />
+                            Sort
                         </Button>
                     </FlexGridItem>
                 </FlexGrid>
@@ -167,7 +176,11 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                                 angle: '-90',
                                 transform: 'translate(-16 0)',
                             },
-                            grid: { stroke: '#A9BEF2', opacity: 0.48 },
+                            grid: {
+                                stroke: '#A9BEF2',
+                                opacity: 0.48,
+                                pointerEvents: 'painted',
+                            },
                         }}
                     />
                     <VictoryAxis
@@ -219,10 +232,15 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                     padding="0px 50px"
                 >
                     <FlexGridItem>
-                        <Label2 color="#A069D0">Yesterday</Label2>
+                        <Label2 color="#A069D0" $style={{ fontWeight: 300 }}>
+                            Yesterday
+                        </Label2>
                     </FlexGridItem>
                     <FlexGridItem>
-                        <Label2 $style={{ textAlign: 'end' }} color="#FF6C9D">
+                        <Label2
+                            $style={{ textAlign: 'end', fontWeight: 300 }}
+                            color="#FF6C9D"
+                        >
                             Today
                         </Label2>
                     </FlexGridItem>
