@@ -169,7 +169,11 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                     </FlexGridItem>
                 </FlexGrid>
 
-                <VictoryChart domainPadding={30} width={1000}>
+                <VictoryChart
+                    domainPadding={30}
+                    width={1000}
+                    animate={{ duration: 650 }}
+                >
                     <VictoryAxis
                         tickLabelComponent={<VictoryLabel angle={-90} />}
                         style={{
