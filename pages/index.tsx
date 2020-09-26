@@ -11,6 +11,7 @@ import {
     VictoryAxis,
     VictoryBrushContainer,
     VictoryChart,
+    VictoryLabel,
     VictoryLine,
     VictoryScatter,
 } from 'victory'
@@ -170,10 +171,10 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
 
                 <VictoryChart domainPadding={30} width={1000}>
                     <VictoryAxis
+                        tickLabelComponent={<VictoryLabel angle={-90} />}
                         style={{
                             axis: { opacity: 0 },
                             tickLabels: {
-                                angle: '-90',
                                 transform: 'translate(-16 0)',
                             },
                             grid: {
