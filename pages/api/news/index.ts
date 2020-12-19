@@ -24,6 +24,8 @@ interface IncomingRequest extends MiddlewareRequest {
     }
 }
 
+// cron-job running on https://cron-job.org/en/
+// schedule every 15 mins
 handler
     .get((req: IncomingRequest, res: NextApiResponse) => {
         /*
