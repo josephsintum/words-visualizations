@@ -9,7 +9,6 @@ export interface NewsType {
         word: string
         frequency: number
     }[]
-
     version: number
 }
 
@@ -26,6 +25,8 @@ const NewsSchema = new mongoose.Schema({
         type: Number,
         default: 1,
     },
+    // data expires after 26 hours from created timestamp
+    createdAt: { type: Date, expires: '26h', default: Date.now },
 })
 
 // Resetting models to avoid -> OverwriteModelError:
