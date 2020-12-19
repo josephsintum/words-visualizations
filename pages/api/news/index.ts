@@ -24,8 +24,6 @@ interface IncomingRequest extends MiddlewareRequest {
     }
 }
 
-// cron-job running on https://cron-job.org/en/
-// schedule every 15 mins
 handler
     .get((req: IncomingRequest, res: NextApiResponse) => {
         /*
@@ -62,6 +60,10 @@ handler
          * no params, body or header
          */
         // fetching top headlines from newsAPI
+
+        // cron-job running on https://cron-job.org/en/
+        // schedule every 15 mins
+
         await newsapi.v2
             .topHeadlines({
                 language: 'en',
@@ -76,7 +78,8 @@ handler
                     dateTime: Date.now(),
                 })
                     .then((data) => {
-                        res.json(data)
+                        // res.json(data)
+                        res.json({ status: 'success' })
                     })
                     .catch((err) => {
                         console.error(err)
