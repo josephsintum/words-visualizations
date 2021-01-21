@@ -25,8 +25,8 @@ const NewsSchema = new mongoose.Schema({
         type: Number,
         default: 1,
     },
-    // data expires after 26 hours from created timestamp
-    createdAt: { type: Date, expires: '26h', default: Date.now },
+    // data expires after 8 days from created timestamp
+    createdAt: { type: Date, expires: '8d', default: Date.now },
 })
 
 // Resetting models to avoid -> OverwriteModelError:
