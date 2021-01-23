@@ -6,13 +6,11 @@
   "author": "josephsintum <sjumbam15@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
     "@types/mongoose": "^5.7.32",
     "@types/natural": "^0.6.3",
-    "@types/styletron-engine-atomic": "^1.1.0",
-    "@types/styletron-react": "^5.0.2",
-    "@types/styletron-standard": "^2.0.1",
     "@types/victory": "^33.1.4",
-    "baseui": "^9.93.0",
     "date-fns": "^2.16.0",
     "mongoose": "^5.9.25",
     "natural": "^2.1.5",
@@ -21,8 +19,6 @@
     "next-connect": "^0.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "styletron-engine-atomic": "^1.4.6",
-    "styletron-react": "^5.2.7",
     "victory": "^35.0.8"
   },
   "scripts": {
@@ -33,7 +29,6 @@
   "devDependencies": {
     "@types/node": "^14.0.13",
     "@types/react": "^16.9.36",
-    "eslint-plugin-baseui": "^9.85.2",
     "typescript": "^3.9.5"
   }
 }

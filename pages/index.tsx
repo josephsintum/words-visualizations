@@ -1,11 +1,14 @@
 import * as React from 'react'
-import { useStyletron } from 'baseui'
-import { Display4, H1, H3, Label2 } from 'baseui/typography'
-import { Block } from 'baseui/block'
-import { SIZE as SpinnerSIZE, StyledSpinnerNext } from 'baseui/spinner'
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { SHAPE, SIZE, Button } from 'baseui/button'
-import { Filter } from 'baseui/icon'
+import FilterListIcon from '@material-ui/icons/FilterList'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import {
+    Box,
+    Container,
+    Button,
+    CircularProgress,
+    Typography,
+} from '@material-ui/core'
+
 import { formatRelative, subHours, isWithinInterval } from 'date-fns'
 import {
     VictoryAxis,
@@ -90,21 +93,26 @@ const Index = () => {
     }, [])
 
     return (
-        <Block width={'80%'} margin="auto" maxWidth="1200px">
-            <H1 color={'accent'}>Word Vis: Charting test</H1>
-            <Block>
-                <H3>Word X frequency chart</H3>
-                <br />
-
+        <Container>
+            <Typography variant="h2" gutterBottom>
+                Word x Sentiment Analysis
+            </Typography>
+            <Typography variant="h5" gutterBottom>
+                Word X frequency chart
+            </Typography>
+            <br />
+            <Box>
                 {isLoaded.error ? (
-                    <Display4 color={'negative'}>{isLoaded.error}</Display4>
+                    <Typography variant="h4" color="error">
+                        {isLoaded.error}
+                    </Typography>
                 ) : !isLoaded.isLoaded ? (
-                    <StyledSpinnerNext $size={SpinnerSIZE.large} />
+                    <CircularProgress />
                 ) : (
                     <WordVis news={news} />
                 )}
-            </Block>
-        </Block>
+            </Box>
+        </Container>
     )
 }
 
@@ -126,48 +134,33 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
         alphaSort
     )
 
-    const [css] = useStyletron()
-
     return (
         <div>
-            <Block>
-                <FlexGrid
-                    flexGridColumnCount={2}
-                    justifyContent="space-between"
-                >
-                    <FlexGridItem>
-                        <Label2 paddingLeft="20px">
-                            <span className={css({ color: '#A069D0' })}>
-                                {' '}
+            <Box>
+                <Box display="flex" justifyContent="space-between">
+                    <Box display="flex">
+                        <Typography display="inline">
+                            <Box color="#A069D0">
                                 {formatRelative(selected.x[0], new Date())}
-                            </span>{' '}
-                            to{' '}
-                            <span className={css({ color: '#FF6C9D' })}>
+                            </Box>
+                        </Typography>
+                        <ArrowForwardIcon color="disabled" />
+                        <Typography display="inline">
+                            <Box color="#FF6C9D">
                                 {formatRelative(selected.x[1], new Date())}
-                            </span>
-                        </Label2>
-                    </FlexGridItem>
-                    <FlexGridItem>
-                        <Button
-                            endEnhancer={() => <Filter size={20} />}
-                            onClick={() => setAlphaSort(!alphaSort)}
-                            shape={SHAPE.pill}
-                            size={SIZE.compact}
-                            $style={{
-                                backgroundColor: alphaSort
-                                    ? '#FF6C9D'
-                                    : '#A069D0',
-                                float: 'right',
-
-                                // ':hover': {
-                                //     backgroundColor: '#fff',
-                                // },
-                            }}
-                        >
-                            Sort
-                        </Button>
-                    </FlexGridItem>
-                </FlexGrid>
+                            </Box>
+                        </Typography>
+                    </Box>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        endIcon={<FilterListIcon />}
+                        style={{ borderRadius: '30px' }}
+                        onClick={() => setAlphaSort(!alphaSort)}
+                    >
+                        Sort
+                    </Button>
+                </Box>
 
                 <VictoryChart
                     domainPadding={30}
@@ -231,86 +224,81 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
                 </VictoryChart>
 
                 <br />
-                <FlexGrid
-                    flexGridColumnCount={2}
+                <Box
+                    display="flex"
                     justifyContent="space-between"
                     padding="0px 50px"
                 >
-                    <FlexGridItem>
-                        <Label2 color="#A069D0" $style={{ fontWeight: 300 }}>
-                            Yesterday
-                        </Label2>
-                    </FlexGridItem>
-                    <FlexGridItem>
-                        <Label2
-                            $style={{ textAlign: 'end', fontWeight: 300 }}
-                            color="#FF6C9D"
-                        >
-                            Today
-                        </Label2>
-                    </FlexGridItem>
-                </FlexGrid>
-            </Block>
+                    <Box color="#A069D0">
+                        <Typography variant="overline">Yesterday</Typography>
+                    </Box>
+                    <Box color="#FF6C9D">
+                        <Typography variant="overline">Today</Typography>
+                    </Box>
+                </Box>
+            </Box>
 
             <br />
             {/* Scrub bar */}
-            <VictoryChart
-                width={1000}
-                height={100}
-                scale={{ x: 'time' }}
-                padding={{ top: 0, left: 50, right: 50, bottom: 60 }}
-                containerComponent={
-                    <VictoryBrushContainer
-                        brushDimension="x"
-                        brushDomain={selected}
-                        onBrushDomainChange={setSelected}
-                        brushStyle={{
-                            fill: 'url(#myGradient)',
-                            // @ts-ignore
-                            rx: 12,
-                            height: 24,
+            <Box>
+                <VictoryChart
+                    width={1000}
+                    height={100}
+                    scale={{ x: 'time' }}
+                    padding={{ top: 0, left: 50, right: 50, bottom: 60 }}
+                    containerComponent={
+                        <VictoryBrushContainer
+                            brushDimension="x"
+                            brushDomain={selected}
+                            onBrushDomainChange={setSelected}
+                            brushStyle={{
+                                fill: 'url(#myGradient)',
+                                // @ts-ignore
+                                rx: 12,
+                                height: 24,
+                            }}
+                        />
+                    }
+                    domainPadding={30}
+                >
+                    <VictoryAxis
+                        tickValues={Array.apply(null, Array(24)).map(
+                            (value, index) => {
+                                let t = new Date()
+                                t.setDate(t.getDate() - 1)
+                                t.setHours(t.getHours() + index + 1)
+                                return t
+                            }
+                        )}
+                        offsetY={87}
+                        tickFormat={(x) => new Date(x).getHours()}
+                        style={{
+                            axis: {
+                                stroke: '#FF8A85',
+                                opacity: 0.5,
+                                strokeWidth: 6,
+                            },
+                            tickLabels: {
+                                padding: 25,
+                                fill: ({ tick }) =>
+                                    isWithinInterval(new Date(tick), {
+                                        start: new Date(selected.x[0]),
+                                        end: new Date(selected.x[1]),
+                                    })
+                                        ? '#A069D0'
+                                        : '#464444',
+                                fontWeight: ({ tick }) =>
+                                    isWithinInterval(new Date(tick), {
+                                        start: new Date(selected.x[0]),
+                                        end: new Date(selected.x[1]),
+                                    })
+                                        ? '600'
+                                        : '100',
+                            },
                         }}
                     />
-                }
-                domainPadding={30}
-            >
-                <VictoryAxis
-                    tickValues={Array.apply(null, Array(24)).map(
-                        (value, index) => {
-                            let t = new Date()
-                            t.setDate(t.getDate() - 1)
-                            t.setHours(t.getHours() + index + 1)
-                            return t
-                        }
-                    )}
-                    offsetY={87}
-                    tickFormat={(x) => new Date(x).getHours()}
-                    style={{
-                        axis: {
-                            stroke: '#FF8A85',
-                            opacity: 0.5,
-                            strokeWidth: 6,
-                        },
-                        tickLabels: {
-                            padding: 25,
-                            fill: ({ tick }) =>
-                                isWithinInterval(new Date(tick), {
-                                    start: new Date(selected.x[0]),
-                                    end: new Date(selected.x[1]),
-                                })
-                                    ? '#A069D0'
-                                    : '#464444',
-                            fontWeight: ({ tick }) =>
-                                isWithinInterval(new Date(tick), {
-                                    start: new Date(selected.x[0]),
-                                    end: new Date(selected.x[1]),
-                                })
-                                    ? '600'
-                                    : '100',
-                        },
-                    }}
-                />
-            </VictoryChart>
+                </VictoryChart>
+            </Box>
 
             {/*svg gradient*/}
             <svg style={{ height: 0 }}>
