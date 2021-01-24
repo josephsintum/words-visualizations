@@ -34,5 +34,6 @@ export default function wordCounter(text: ArticleType[]) {
             .sort((a, b) => {
                 return a.frequency - b.frequency
             })
+            .slice(-15)
     )
 }

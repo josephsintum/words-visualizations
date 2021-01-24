@@ -86,7 +86,7 @@ handler
                         res.status(500).json(err)
                     })
             })
-            .catch((err: any) => {
+            .catch((err: unknown) => {
                 console.error(err)
             })
     })
