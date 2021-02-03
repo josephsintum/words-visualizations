@@ -21,7 +21,7 @@ import {
 
 import { NewsType } from '../models/news.model'
 
-const calcWordFreq = (
+export const calcWordFreq = (
     statistics: NewsType[],
     startTime: Date | number,
     endTime: Date | number,
@@ -50,7 +50,7 @@ const calcWordFreq = (
         .sort((a, b) => a.frequency - b.frequency)
 
     // number of words to be returned
-    if (slice) stats = stats.slice(slice)
+    stats = stats.slice(slice || 10)
     // alphaSort remaining array in alphabetical order
     if (alphaSort)
         stats = stats.sort((a, b) => {

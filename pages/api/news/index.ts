@@ -7,6 +7,9 @@ import { NewsModel } from '../../../models/news.model'
 import { NextApiResponse } from 'next'
 import wordCounter from '../../../utils/wordCounter'
 import { NewsAPIResponse } from '../../../utils/newsAPITypes'
+import { endOfToday, startOfToday } from 'date-fns'
+import { DailyStatsModel } from '../../../models/dailyStats.model'
+import { calcWordFreq } from '../../index'
 
 const newsapi = new NewsAPI(process.env.API_KEY)
 
@@ -65,6 +68,7 @@ handler
         // schedule every 15 mins
 
         await newsapi.v2
+            // source top headlines from the News API
             .topHeadlines({
                 language: 'en',
                 pageSize: 100,
@@ -74,12 +78,54 @@ handler
                 NewsModel.create({
                     sources: 'all',
                     stats: wordCounter(newsData.articles),
-                    version: 1,
+                    version: 2,
                     dateTime: Date.now(),
                 })
                     .then((data) => {
-                        // res.json(data)
-                        res.json({ status: 'success' })
+                        // update daily Stat database
+                        NewsModel.find(
+                            {
+                                dateTime: {         // query date range
+                                    $gte: startOfToday(),
+                                    $lte: endOfToday(),
+                                },
+                            },
+                            'dateTime stats'
+                        )
+                            .then((data) => {
+                                let cumulativeList = calcWordFreq(
+                                    data,
+                                    startOfToday(),
+                                    endOfToday()
+                                )
+                                // find and update else create daily stats collection
+                                DailyStatsModel.findOneAndUpdate(
+                                    { dateTime: startOfToday() },
+                                    {
+                                        dateTime: startOfToday(),
+                                        version: 1,
+                                        stats: cumulativeList,
+                                    },
+                                    {
+                                        upsert: true,
+                                        new: true,
+                                        setDefaultsOnInsert: true,
+                                    },
+                                    (err, result) => {
+                                        if (err) {
+                                            console.error(err)
+                                            res.status(500).json(err)
+                                            return
+                                        }
+                                        res.json(result)
+                                    }
+                                )
+                            })
+                            .catch((err) => {
+                                console.error(err)
+                                res.status(500).json(err)
+                            })
+                        // res.json({ status: 'success' })
                     })
                     .catch((err) => {
                         console.error(err)

@@ -7,6 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^4.11.2",
+    "@material-ui/data-grid": "^4.0.0-alpha.18",
     "@material-ui/icons": "^4.11.2",
     "@types/mongoose": "^5.7.32",
     "@types/natural": "^0.6.3",
