@@ -50,7 +50,7 @@ export const calcWordFreq = (
         .sort((a, b) => a.frequency - b.frequency)
 
     // number of words to be returned
-    stats = stats.slice(slice || 10)
+    stats = stats.slice(slice || -10)
     // alphaSort remaining array in alphabetical order
     if (alphaSort)
         stats = stats.sort((a, b) => {

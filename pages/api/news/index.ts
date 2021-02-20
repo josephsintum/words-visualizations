@@ -96,7 +96,8 @@ handler
                                 let cumulativeList = calcWordFreq(
                                     data,
                                     startOfToday(),
-                                    endOfToday()
+                                    endOfToday(),
+                                    -10
                                 )
                                 // find and update else create daily stats collection
                                 DailyStatsModel.findOneAndUpdate(
