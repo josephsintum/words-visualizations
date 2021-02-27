@@ -1,13 +1,7 @@
 import * as React from 'react'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
-import {
-    Box,
-    Container,
-    Button,
-    CircularProgress,
-    Typography,
-} from '@material-ui/core'
+import { Box, Container, Button, Typography } from '@material-ui/core'
 
 import { formatRelative, subHours, isWithinInterval } from 'date-fns'
 import {
@@ -19,7 +13,8 @@ import {
     VictoryScatter,
 } from 'victory'
 
-import { NewsType } from '../models/news.model'
+import { NewsModel, NewsType } from '../models/news.model'
+import { GetServerSideProps } from 'next'
 
 export const calcWordFreq = (
     statistics: NewsType[],
@@ -62,36 +57,7 @@ export const calcWordFreq = (
     return stats
 }
 
-const Index = () => {
-    const [isLoaded, setIsLoaded] = React.useState<{
-        isLoaded: boolean
-        error: any
-    }>({ isLoaded: false, error: null })
-    const [news, setNews] = React.useState<NewsType[]>([])
-
-    let newsParams = {
-        pageSize: 90,
-        statSize: 15,
-    }
-
-    React.useEffect(() => {
-        fetch(
-            `api/news?pageSize=${newsParams.pageSize}&statSize=${newsParams.statSize}`
-        )
-            .then((res) => {
-                return res.json()
-            })
-            .then(
-                (newsData: NewsType[]) => {
-                    setIsLoaded({ ...isLoaded, isLoaded: true })
-                    setNews(newsData)
-                },
-                (error) => {
-                    setIsLoaded({ isLoaded: true, error: error })
-                }
-            )
-    }, [])
-
+const Index = ({ stats, error }: { stats: NewsType[]; error: boolean }) => {
     return (
         <Container>
             <Typography variant="h2" gutterBottom>
@@ -102,14 +68,12 @@ const Index = () => {
             </Typography>
             <br />
             <Box>
-                {isLoaded.error ? (
+                {error ? (
                     <Typography variant="h4" color="error">
-                        {isLoaded.error}
+                        Error happened, Oops!
                     </Typography>
-                ) : !isLoaded.isLoaded ? (
-                    <CircularProgress />
                 ) : (
-                    <WordVis news={news} />
+                    <WordVis news={stats} />
                 )}
             </Box>
         </Container>
@@ -311,4 +275,28 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
             </svg>
         </div>
     )
+}
+
+// load stats before repond to page request
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    let pageSize = 24
+    let statSize = -25
+    let page = 0
+    let stats = {}
+    let error = false
+
+    await NewsModel.find({}, 'dateTime stats')
+        .slice('stats', statSize)
+        .limit(pageSize)
+        .skip(pageSize * page)
+        .sort('-dateTime')
+        .then((data) => {
+            stats = JSON.parse(JSON.stringify(data))
+        })
+        .catch((err) => {
+            console.error(err)
+            error = true
+        })
+
+    return { props: { stats, error } }
 }
