@@ -103,17 +103,17 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
             <Box>
                 <Box display="flex" justifyContent="space-between">
                     <Box display="flex">
-                        <Typography display="inline">
-                            <Box color="#A069D0">
+                        <Box display="inline" color="#A069D0">
+                            <Typography>
                                 {formatRelative(selected.x[0], new Date())}
-                            </Box>
-                        </Typography>
+                            </Typography>
+                        </Box>
                         <ArrowForwardIcon color="disabled" />
-                        <Typography display="inline">
-                            <Box color="#FF6C9D">
+                        <Box color="#FF6C9D">
+                            <Typography display="inline">
                                 {formatRelative(selected.x[1], new Date())}
-                            </Box>
-                        </Typography>
+                            </Typography>
+                        </Box>
                     </Box>
                     <Button
                         variant="contained"
