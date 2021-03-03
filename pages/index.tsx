@@ -13,9 +13,7 @@ import {
     VictoryScatter,
 } from 'victory'
 
-import { NewsModel, NewsType } from '../models/news.model'
-import { GetServerSideProps } from 'next'
-import middleware from '../middleware/middleware'
+import { NewsType } from '../models/news.model'
 
 export const calcWordFreq = (
     statistics: NewsType[],
@@ -58,7 +56,19 @@ export const calcWordFreq = (
     return stats
 }
 
-const Index = ({ stats, error }: { stats: NewsType[]; error: boolean }) => {
+const Index = () => {
+    const [error, setError] = React.useState()
+    const [stats, setStats] = React.useState<NewsType[]>()
+
+    React.useEffect(() => {
+        const pageSize = 90     // number of pages of stats
+        const statSize = 15   // number of stats per page
+        fetch(`/api/news?pageSize=${pageSize}&statSize=${statSize}`)
+            .then((res) => res.json())
+            .then((data) => setStats(() => data))
+            .catch((err) => setError(err))
+    }, [])
+
     return (
         <Container>
             <Typography variant="h2" gutterBottom>
@@ -71,10 +81,14 @@ const Index = ({ stats, error }: { stats: NewsType[]; error: boolean }) => {
             <Box>
                 {error ? (
                     <Typography variant="h4" color="error">
-                        Error happened, Oops!
+                        Oops! There was an error.
                     </Typography>
-                ) : (
+                ) : stats ? (
                     <WordVis news={stats} />
+                ) : (
+                    <Typography variant="h4" color="secondary">
+                        Loading
+                    </Typography>
                 )}
             </Box>
         </Container>
@@ -276,31 +290,4 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
             </svg>
         </div>
     )
-}
-
-// load stats before repond to page request
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    let pageSize = 90
-    let statSize = -15
-    let page = 0
-    let stats = {}
-    let error = false
-
-    // apply middleware(connect to db)
-    await middleware.apply(req, res)
-
-    await NewsModel.find({}, 'dateTime stats')
-        .slice('stats', statSize)
-        .limit(pageSize)
-        .skip(pageSize * page)
-        .sort('-dateTime')
-        .then((data) => {
-            stats = JSON.parse(JSON.stringify(data))
-        })
-        .catch((err) => {
-            console.error(err)
-            error = true
-        })
-
-    return { props: { stats, error } }
 }
