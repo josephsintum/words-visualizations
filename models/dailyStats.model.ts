@@ -29,7 +29,7 @@ const DailyStatsSchema = new mongoose.Schema({
 
 // Resetting models to avoid -> OverwriteModelError:
 // Cannot overwrite `news` model once compiled.
-mongoose.models = {}
+// mongoose.models = {}
 
 export const DailyStatsModel: mongoose.Model<mongoose.Document & DailyStatsType> =
     mongoose.models.DailyStatsModel || mongoose.model('dailyStats', DailyStatsSchema)

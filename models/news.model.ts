@@ -31,6 +31,7 @@ const NewsSchema = new mongoose.Schema({
 
 // Resetting models to avoid -> OverwriteModelError:
 // Cannot overwrite `news` model once compiled.
+// @ts-ignore
 mongoose.models = {}
 
 export const NewsModel: mongoose.Model<mongoose.Document & NewsType> =
