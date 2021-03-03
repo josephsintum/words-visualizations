@@ -2,6 +2,7 @@ import * as React from 'react'
 import { GetServerSideProps } from 'next'
 import { Box, Container, Typography } from '@material-ui/core'
 import { DailyStatsModel, DailyStatsType } from '../models/dailyStats.model'
+import middleware from '../middleware/middleware'
 
 const Sentiment = ({ dailyStats }: { dailyStats: DailyStatsType[] }) => (
     <Container>
@@ -26,7 +27,10 @@ const Sentiment = ({ dailyStats }: { dailyStats: DailyStatsType[] }) => (
 
 export default Sentiment
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+    // apply middleware(connect to db)
+    await middleware.apply(req, res)
+
     const data = await DailyStatsModel.find({})
     let dailyStats: DailyStatsType[] = JSON.parse(JSON.stringify(data))
     return { props: { dailyStats } }

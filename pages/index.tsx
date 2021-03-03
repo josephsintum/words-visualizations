@@ -15,6 +15,7 @@ import {
 
 import { NewsModel, NewsType } from '../models/news.model'
 import { GetServerSideProps } from 'next'
+import middleware from '../middleware/middleware'
 
 export const calcWordFreq = (
     statistics: NewsType[],
@@ -278,12 +279,15 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
 }
 
 // load stats before repond to page request
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     let pageSize = 24
     let statSize = -25
     let page = 0
     let stats = {}
     let error = false
+
+    // apply middleware(connect to db)
+    await middleware.apply(req, res)
 
     await NewsModel.find({}, 'dateTime stats')
         .slice('stats', statSize)
