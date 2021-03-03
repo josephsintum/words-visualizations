@@ -1,11 +1,9 @@
 import * as React from 'react'
-import { GetStaticProps, InferGetStaticPropsType } from 'next'
+import { GetServerSideProps } from 'next'
 import { Box, Container, Typography } from '@material-ui/core'
 import { DailyStatsModel, DailyStatsType } from '../models/dailyStats.model'
 
-const Sentiment = ({
-    dailyStats,
-}: InferGetStaticPropsType<typeof getStaticProps>) => (
+const Sentiment = ({ dailyStats }: { dailyStats: DailyStatsType[] }) => (
     <Container>
         <Box paddingY="40px">
             <Typography variant="h4" gutterBottom>
@@ -28,8 +26,14 @@ const Sentiment = ({
 
 export default Sentiment
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     const data = await DailyStatsModel.find({})
     let dailyStats: DailyStatsType[] = JSON.parse(JSON.stringify(data))
     return { props: { dailyStats } }
 }
+
+/*
+ * Twit - Twitter JS Client
+ * https://github.com/ttezel/twit
+ *
+ * */
