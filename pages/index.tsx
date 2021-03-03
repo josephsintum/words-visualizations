@@ -280,8 +280,8 @@ export const WordVis = ({ news }: { news: NewsType[] }) => {
 
 // load stats before repond to page request
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    let pageSize = 24
-    let statSize = -25
+    let pageSize = 90
+    let statSize = -15
     let page = 0
     let stats = {}
     let error = false
