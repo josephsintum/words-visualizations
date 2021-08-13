@@ -16,7 +16,7 @@
     "mongoose": "^5.9.25",
     "natural": "^2.1.5",
     "newsapi": "^2.4.0",
-    "next": "^9.4.4",
+    "next": "^11.1.0",
     "next-connect": "^0.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
